@@ -15,7 +15,7 @@ body {
 }
 
 a {
-    color: #fff;
+    color: #f40404;
 }
 
 img {
@@ -27,7 +27,7 @@ img {
 header {
     padding: 15px 20px;
     background: #111;
-    color: #fff;
+    color: #b30404;
 }
 
 #main-header {
@@ -41,7 +41,7 @@ header {
 header h1,
 #main-header h1 {
     margin: 0;
-    color: #fff;
+    color: #d40404;
     font-size: 2rem;
 }
 
@@ -107,6 +107,9 @@ p {
     text-align: center;
     background: #fff;
     border: 1px solid #ddd;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
 }
 
 .card img {
@@ -114,6 +117,21 @@ p {
     height: 200px;
     margin-bottom: 15px;
     object-fit: cover;
+}
+
+.card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+}
+
+.product-grid .card {
+    flex: 1 1 280px;
+    display: flex;
+    flex-direction: column;
+}
+
+.card .card-content {
+    flex: 1 1 auto;
 }
 
 .button,
@@ -142,6 +160,49 @@ input[type="submit"]:hover {
     max-height: 420px;
     object-fit: cover;
 }
+
+/* Simple grid demo (header/sidebar/main/footer) */
+.demo-grid {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    grid-template-rows: auto 1fr auto;
+    gap: 12px;
+    grid-template-areas:
+        "dg-header dg-header"
+        "dg-sidebar dg-main"
+        "dg-footer dg-footer";
+    margin-bottom: 25px;
+}
+.dg-header { grid-area: dg-header; padding: 12px; background: #fff; border: 1px solid #ddd; }
+.dg-sidebar { grid-area: dg-sidebar; padding: 12px; background: #fff; border: 1px solid #ddd; }
+.dg-main { grid-area: dg-main; padding: 12px; background: #fff; border: 1px solid #ddd; }
+.dg-footer { grid-area: dg-footer; padding: 8px; background: #f1f1f1; border: 1px solid #ddd; }
+
+/* Image gallery grid */
+.gallery {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 25px;
+}
+.gallery-item {
+    position: relative;
+    overflow: hidden;
+    background: #fff;
+    border: 1px solid #ddd;
+}
+.gallery-item img { width: 100%; height: 160px; object-fit: cover; display: block; }
+.gallery-item .caption {
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    padding: 8px 10px;
+    background: rgba(0,0,0,0.6);
+    color: #fff;
+    font-size: 0.95rem;
+    opacity: 0;
+    transition: opacity 0.18s ease;
+}
+.gallery-item:hover .caption { opacity: 1; }
 
 .card-content {
     padding-top: 10px;
@@ -235,4 +296,8 @@ footer {
     .card {
         width: 100%;
     }
+
+    .gallery { grid-template-columns: repeat(2, 1fr); }
+    .demo-grid { grid-template-columns: 1fr; grid-template-areas:
+        "dg-header" "dg-main" "dg-sidebar" "dg-footer"; }
 }
