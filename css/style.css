@@ -301,3 +301,7 @@ footer {
     .demo-grid { grid-template-columns: 1fr; grid-template-areas:
         "dg-header" "dg-main" "dg-sidebar" "dg-footer"; }
 }
+.dg-sidebar a {
+    color: #111; 
+    font-weight: normal;
+}
