@@ -15,7 +15,7 @@ body {
 }
 
 a {
-    color: #f40404;
+    color: #f5f0f0;
 }
 
 img {
@@ -27,7 +27,7 @@ img {
 header {
     padding: 15px 20px;
     background: #111;
-    color: #b30404;
+    color: #e7e2e2;
 }
 
 #main-header {
@@ -41,7 +41,7 @@ header {
 header h1,
 #main-header h1 {
     margin: 0;
-    color: #d40404;
+    color: #f6f4f4;
     font-size: 2rem;
 }
 
