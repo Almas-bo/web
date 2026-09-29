@@ -3,44 +3,99 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KicksLab - Women's Shoes</title>
+    <title>KicksLab - Women's Collection</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
-    <header id="main-header">
-        <h1>KicksLab</h1>
-        <nav>
-            <ul>
-                <li><a href="index.html">Home</a></li>
-                <li><a href="men.html">Men</a></li>
-                <li><a href="women.html">Women</a></li>
-                <li><a href="kids.html">Kids</a></li>
-                <li><a href="team.html">Team</a></li>
-                <li><a href="contact.html">Contact</a></li>
-            </ul>
-        </nav>
-    </header>
+<body class="bg-light d-flex flex-column min-vh-100">
 
-    <main>
-        <h2>Women's Collection</h2>
-        <div class="product-grid">
-            <div class="card">
-                <img src="https://i.pinimg.com/1200x/20/9b/e1/209be13e00208521844a301cc859f2ed.jpg" alt="Women's Sport">
-                <h3>Flex Soft</h3>
-                <p>Price: $110</p>
-                <button class="btn">Buy</button>
+    <nav class="navbar navbar-expand-lg navbar-dark shadow-sm">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand fw-bold" href="index.html">KicksLab</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="men.html">Men</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="women.html">Women</a></li>
+                    <li class="nav-item"><a class="nav-link" href="kids.html">Kids</a></li>
+                    <li class="nav-item"><a class="nav-link" href="team.html">Team</a></li>
+                    <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+                </ul>
             </div>
-            <div class="card">
-                <img src="https://i.pinimg.com/1200x/11/ab/9c/11ab9c0b90b49af06e214b29e134ade9.jpg" alt="Women's Urban">
-                <h3>Urban Pink</h3>
-                <p>Price: $105</p>
-                <button class="btn">Buy</button>
+        </div>
+    </nav>
+
+    <main class="container-fluid px-4 my-4 flex-grow-1">
+
+        <div class="bg-white p-4 p-md-5 rounded shadow-sm mb-4 border-top border-4 border-warning">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="display-6 fw-bold">Women's Spring Collection 🌸</h1>
+                    <p class="lead text-muted">Lightweight, breathable, and designed for ultimate everyday elegance and performance.</p>
+                </div>
+                <div class="col-md-4 text-md-end">
+                    <span class="badge bg-warning text-dark fs-6 p-3 shadow-sm">Up to 30% Off</span>
+                </div>
+            </div>
+        </div>
+
+        <h3 class="mb-3 fw-bold">Featured Models</h3>
+        <div class="row g-4">
+            <div class="col-12 col-sm-6 col-lg-3">
+                <div class="card h-100 shadow-sm">
+                    <span class="badge-overlay">BESTSELLER</span>
+                    <img src="https://static.nike.com/a/images/t_web_pdp_535_v2/f_auto,u_9ddf04c7-2a9a-4d76-add1-d15af8f0263d,c_scale,fl_relative,w_1.0,h_1.0,fl_layer_apply/e5343012-4381-448f-ad3b-d938fd501dd4/W+NIKE+METCON+10+NBY.png" class="card-img-top" alt="Sneaker">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">Flex Soft Rose</h5>
+                        <p class="card-text text-muted">$110.00</p>
+                        <button class="btn btn-primary mt-auto">Add to Cart</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-sm-6 col-lg-3">
+                <div class="card h-100 shadow-sm">
+                    <span class="badge-overlay">NEW</span>
+                    <img src="https://static.nike.com/a/images/t_web_pdp_535_v2/f_auto/15ac4a8c-820e-4bbb-9044-0dd75c5f2fa3/NIKE+P-6000+NBY.png" class="card-img-top" alt="Sneaker">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">Urban Pink Edition</h5>
+                        <p class="card-text text-muted">$125.00</p>
+                        <button class="btn btn-primary mt-auto">Add to Cart</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-sm-6 col-lg-3">
+                <div class="card h-100 shadow-sm">
+                    <img src="https://static.nike.com/a/images/t_web_pdp_535_v2/f_auto/ed8fdfd4-5ade-4a88-ad09-25d194389829/W+AIR+MAX+270+NBY.png" class="card-img-top" alt="Sneaker">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">Cloud Foam White</h5>
+                        <p class="card-text text-muted">$135.00</p>
+                        <button class="btn btn-primary mt-auto">Add to Cart</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-sm-6 col-lg-3">
+                <div class="card h-100 shadow-sm">
+                    <span class="badge-overlay">SALE</span>
+                    <img src="https://static.nike.com/a/images/t_web_pdp_535_v2/f_auto/1785f1c4-c70f-4d3a-bd95-f1ee84427297/NIKE+VOMERO+PLUS+NBY.png" class="card-img-top" alt="Sneaker">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">Aero Comfort Runner</h5>
+                        <p class="card-text text-muted">$95.00</p>
+                        <button class="btn btn-primary mt-auto">Add to Cart</button>
+                    </div>
+                </div>
             </div>
         </div>
     </main>
 
-    <footer>
-        <p>© 2026 KicksLab. Team Members: Almas Bekenov, Yersultan Sansyzbay, Dinmukhamed Bolat.</p>
+    <footer class="bg-dark text-white text-center py-3 mt-auto">
+        <div class="container-fluid">
+            <p class="mb-0">© 2026 KicksLab. Team Members: Yersultan Sansyzbay, Almas Bekenov, Dinmukhamed Bolat.</p>
+        </div>
     </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

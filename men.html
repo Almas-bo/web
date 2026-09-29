@@ -3,68 +3,205 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KicksLab - Men's Shoes</title>
+    <title>KicksLab - Men's Collection</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
-    <header id="main-header">
-        <h1>KicksLab</h1>
-        <nav>
-            <ul>
-                <li><a href="index.html">Home</a></li>
-                <li><a href="men.html">Men</a></li>
-                <li><a href="women.html">Women</a></li>
-                <li><a href="kids.html">Kids</a></li>
-                <li><a href="team.html">Team</a></li>
-                <li><a href="contact.html">Contact</a></li>
-            </ul>
-        </nav>
-    </header>
 
-    <main>
-        <h2>Men's Collection</h2>
-        <div class="product-grid">
-            <div class="card">
-                <img src="https://i.pinimg.com/1200x/ea/49/95/ea49953a121861197fde975f7af34e5f.jpg" alt="Men's Runner">
-                <h3>Air Runner</h3>
-                <p>Price: $120</p>
-                <button class="btn">Buy</button>
+<body class="d-flex flex-column min-vh-100">
+
+<nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container-fluid px-4">
+        <a class="navbar-brand" href="index.html">KicksLab</a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                <li class="nav-item"><a class="nav-link active" href="men.html">Men</a></li>
+                <li class="nav-item"><a class="nav-link" href="women.html">Women</a></li>
+                <li class="nav-item"><a class="nav-link" href="kids.html">Kids</a></li>
+                <li class="nav-item"><a class="nav-link" href="team.html">Team</a></li>
+                <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<main class="container-fluid px-4 my-4 flex-grow-1">
+
+    <h2 class="mb-4 fw-bold">Men's Collection Showcase</h2>
+
+    <div id="menCarousel" class="carousel slide mb-5" data-bs-ride="carousel">
+
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#menCarousel" data-bs-slide-to="0" class="active"></button>
+            <button type="button" data-bs-target="#menCarousel" data-bs-slide-to="1"></button>
+            <button type="button" data-bs-target="#menCarousel" data-bs-slide-to="2"></button>
+            <button type="button" data-bs-target="#menCarousel" data-bs-slide-to="3"></button>
+            <button type="button" data-bs-target="#menCarousel" data-bs-slide-to="4"></button>
+            <button type="button" data-bs-target="#menCarousel" data-bs-slide-to="5"></button>
+            <button type="button" data-bs-target="#menCarousel" data-bs-slide-to="6"></button>
+            <button type="button" data-bs-target="#menCarousel" data-bs-slide-to="7"></button>
+            <button type="button" data-bs-target="#menCarousel" data-bs-slide-to="8"></button>
+        </div>
+
+        <div class="carousel-inner">
+
+            <div class="carousel-item active">
+                <img src="https://wowjay.com/cdn/shop/products/16070697_30262190_2048.jpg?v=1736220062&width=990"
+                     class="d-block w-100 custom-carousel-img"
+                     alt="Air Runner Pro">
+
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Air Runner Pro</h5>
+                </div>
             </div>
-            <div class="card">
-                <img src="https://i.pinimg.com/1200x/e7/8c/2a/e78c2ac52cc026dee38a43dfb204c9a5.jpg" alt="Men's Classic">
-                <h3>Classic White</h3>
-                <p>Price: $95</p>
-                <button class="btn">Buy</button>
+
+            <div class="carousel-item">
+                <img src="https://i.pinimg.com/1200x/01/5f/71/015f7196294f265a6c07e0dbe94eac94.jpg" class="d-block w-100 custom-carousel-img" alt="Classic White Edition">
+
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Classic White Edition</h5>
+                </div>
+            </div>
+
+            <div class="carousel-item">
+                <img src="https://wowjay.com/cdn/shop/products/16704732_34412696_2048.jpg?v=1736221893&width=990" class="d-block w-100 custom-carousel-img" alt="Urban Sport High">
+
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Urban Sport High</h5>
+                </div>
+            </div>
+
+            <div class="carousel-item">
+                <img src="https://wowjay.com/cdn/shop/products/14458901_34670953_2048.jpg?v=1736221467&width=990" class="d-block w-100 custom-carousel-img" alt="Retro Boost 90">
+
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Retro Boost 90</h5>
+                </div>
+            </div>
+
+            <div class="carousel-item">
+                <img src="https://sidekicks.co.uk/cdn/shop/files/adidas-Terrex-Skychaser-LT-Gore-Tex-Trace-Cargo.webp?v=1773593054&width=990" class="d-block w-100 custom-carousel-img" alt="Trail Flex Outdoor">
+
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Trail Flex Outdoor</h5>
+                </div>
+            </div>
+
+            <div class="carousel-item">
+                <img src="https://sidekicks.co.uk/cdn/shop/files/Puma-H-Street-Leather-Kith-Black-Womens-Product.webp?v=1773515083&width=990" class="d-block w-100 custom-carousel-img" alt="Street Glide Black">
+
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Street Glide Black</h5>
+                </div>
+            </div>
+
+            <div class="carousel-item">
+                <img src="https://sidekicks.co.uk/cdn/shop/files/On-Running-Cloudnova-2-Ice-Mulberry-Womens.webp?v=1773454716&width=576" class="d-block w-100 custom-carousel-img" alt="Sprint Pro Max">
+
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Sprint Pro Max</h5>
+                </div>
+            </div>
+
+            <div class="carousel-item">
+                <img src="https://wowjay.com/cdn/shop/products/17610131_37016282_2048.jpg?v=1736220378&width=990" class="d-block w-100 custom-carousel-img" alt="Court King Leather">
+
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Court King Leather</h5>
+                </div>
+            </div>
+
+            <div class="carousel-item">
+                <img src="https://sidekicks.co.uk/cdn/shop/files/New-Balance-1906U-Grey-Red.webp?v=1750476786&width=576" class="d-block w-100 custom-carousel-img" alt="All-Day Comfort Foam">
+
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>All-Day Comfort Foam</h5>
+                </div>
+            </div>
+
+        </div>
+
+        <button class="carousel-control-prev" type="button" data-bs-target="#menCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+
+        <button class="carousel-control-next" type="button" data-bs-target="#menCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+
+    </div>
+
+    <h3 class="mb-3 fw-bold">Featured Catalog</h3>
+
+    <div class="row g-4">
+
+        <div class="col-12 col-sm-6 col-lg-3">
+            <div class="card h-100">
+                <img src="https://wowjay.com/cdn/shop/products/16070697_30262190_2048.jpg?v=1736220062&width=990" class="card-img-top product-image" alt="Air Runner Pro">
+
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">Air Runner Pro</h5>
+                    <p class="card-text text-muted">$160.00</p>
+                    <button class="btn btn-dark mt-auto">Buy Now</button>
+                </div>
             </div>
         </div>
 
-        <h2>Size Guide</h2>
-        <table>
-            <tr>
-                <th>US Size</th>
-                <th>EU Size</th>
-                <th>Foot Length (cm)</th>
-            </tr>
-            <tr>
-                <td>8</td>
-                <td>41</td>
-                <td>26.0</td>
-            </tr>
-            <tr>
-                <td>9</td>
-                <td>42.5</td>
-                <td>27.0</td>
-            </tr>
-            <tr>
-                <td>10</td>
-                <td>44</td>
-                <td>28.0</td>
-            </tr>
-        </table>
-    </main>
+        <div class="col-12 col-sm-6 col-lg-3">
+            <div class="card h-100">
+                <img src="https://wowjay.com/cdn/shop/products/16704732_34412696_2048.jpg?v=1736221893&width=990" class="card-img-top product-image" alt="Urban Sport High">
 
-    <footer>
-        <p>© 2026 KicksLab. Team Members: Almas Bekenov, Yersultan Sansyzbay, Dinmukhamed Bolat.</p>
-    </footer>
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">Urban Sport High</h5>
+                    <p class="card-text text-muted">$145.00</p>
+                    <button class="btn btn-dark mt-auto">Buy Now</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-lg-3">
+            <div class="card h-100">
+                <img src="https://wowjay.com/cdn/shop/products/14458901_34670953_2048.jpg?v=1736221467&width=990" class="card-img-top product-image" alt="Retro Boost 90">
+
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">Retro Boost 90</h5>
+                    <p class="card-text text-muted">$115.00</p>
+                    <button class="btn btn-dark mt-auto">Buy Now</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-lg-3">
+            <div class="card h-100">
+                <img src="https://wowjay.com/cdn/shop/products/17610131_37016282_2048.jpg?v=1736220378&width=990" class="card-img-top product-image" alt="Court King Leather">
+
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">Court King Leather</h5>
+                    <p class="card-text text-muted">$130.00</p>
+                    <button class="btn btn-dark mt-auto">Buy Now</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</main>
+
+<footer class="text-white text-center py-3 mt-auto">
+    <div class="container-fluid">
+        <p class="mb-0">© 2026 KicksLab. Team Members: Yersultan Sansyzbay, Almas Bekenov, Dinmukhamed Bolat.</p>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>

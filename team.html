@@ -3,44 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KicksLab - About Team</title>
+    <title>KicksLab - Team</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
-    <header id="main-header">
-        <h1>KicksLab</h1>
-        <nav>
-            <ul>
-                <li><a href="index.html">Home</a></li>
-                <li><a href="men.html">Men</a></li>
-                <li><a href="women.html">Women</a></li>
-                <li><a href="kids.html">Kids</a></li>
-                <li><a href="team.html">Team</a></li>
-                <li><a href="contact.html">Contact</a></li>
-            </ul>
-        </nav>
-    </header>
+<body class="bg-light d-flex flex-column min-vh-100">
 
-    <main>
-        <h2>About Our Team</h2>
-        <div class="product-grid">
-            <div class="card">
-                <img src="https://i.pinimg.com/1200x/bf/7c/58/bf7c58a7ff795d1c5cd8c2a1a1c2b588.jpg" alt="Team Member 1" class="profile-img">
-                <h3>Almas Bekenov</h3>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="index.html">KicksLab</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="men.html">Men</a></li>
+                    <li class="nav-item"><a class="nav-link" href="women.html">Women</a></li>
+                    <li class="nav-item"><a class="nav-link" href="kids.html">Kids</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="team.html">Team</a></li>
+                    <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+                </ul>
             </div>
-            <div class="card">
-                <img src="https://i.pinimg.com/736x/eb/bf/6a/ebbf6a0dd3ce70ad78d769be8aac863a.jpg" alt="Team Member 2" class="profile-img">
-                <h3>Yersultan Sansyzbay</h3>
+        </div>
+    </nav>
+
+    <main class="container my-4 my-lg-5 flex-grow-1">
+        <h2 class="mb-4 text-center">About Our Team</h2>
+        <div class="row g-4 text-center">
+            <div class="col-md-4">
+                <div class="card p-3 shadow-sm h-100">
+                    <img src="https://i.pinimg.com/736x/a5/13/25/a51325ae27836d15b3a57be164c48c7a.jpg" class="profile-img-bs mx-auto mb-3" alt="Student 1">
+                    <h5>Yersultan Sansyzbay</h5>
+                </div>
             </div>
-            <div class="card">
-                <img src="https://i.pinimg.com/1200x/44/35/1d/44351de31cb56f0fe0270cef3b3db332.jpg" alt="Team Member 3" class="profile-img">
-                <h3>Dinmukhamed Bolat</h3>
+            <div class="col-md-4">
+                <div class="card p-3 shadow-sm h-100">
+                    <img src="https://i.pinimg.com/1200x/39/81/b0/3981b00c5cc193f4d59f1ec19c294b86.jpg" class="profile-img-bs mx-auto mb-3" alt="Student 2">
+                    <h5>Almas Bekenov</h5>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card p-3 shadow-sm h-100">
+                    <img src="https://i.pinimg.com/736x/cc/d7/77/ccd777f5658060590cc7ffabedf0450a.jpg" class="profile-img-bs mx-auto mb-3" alt="Student 3">
+                    <h5>Dinmukhamed Bolat</h5>
+                </div>
             </div>
         </div>
     </main>
 
-    <footer>
-        <p>© 2026 KicksLab. Team Members: Almas Bekenov, Yersultan Sansyzbay, Dinmukhamed Bolat.</p>
+    <footer class="bg-dark text-white text-center py-3 mt-auto">
+        <div class="container">
+            <p class="mb-0">© 2026 KicksLab. Team Members: Yersultan Sansyzbay, Almas Bekenov, Dinmukhamed Bolat.</p>
+        </div>
     </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
