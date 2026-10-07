@@ -1,82 +1,95 @@
-# KicksLab
+# KicksLab 👟
+**KicksLab** is a modern multi-page online sneaker store developed as part of a university web development project.
 
-KicksLab — это многостраничный интернет-магазин кроссовок и обуви, созданный в рамках учебного задания. Проект представляет собой современный storefront с категориями для мужчин, женщин, детей, командой и страницей контактов.
+The website provides a stylish storefront for sneakers and sports footwear, with separate collections for men, women, and kids, as well as dedicated team and contact pages.
 
-## О проекте
+## 📌 About the Project
+The main goal of KicksLab is to create a modern, responsive, and user-friendly e-commerce website using **HTML5, CSS3, and Bootstrap 5**.
 
-Сайт разработан как адаптивная landing page/магазин с использованием HTML, CSS и Bootstrap. Основная цель — продемонстрировать стильную витрину спортивной обуви, удобную навигацию и современный визуальный дизайн.
+The project focuses on:
 
-### Основные страницы
+- Modern and clean user interface
+- Responsive design
+- Easy navigation
+- Product collections
+- Category-based organization
+- Consistent visual style
+- User-friendly experience
 
-- Главная страница (`index.html`)
-- Мужская коллекция (`men.html`)
-- Женская коллекция (`women.html`)
-- Детская коллекция (`kids.html`)
-- Команда (`team.html`)
-- Контакты (`contact.html`)
+## 📄 Website Pages
+The website consists of the following pages:
 
-### Основные особенности
+PageDescription`index.html`Homepage with featured collections and promotional sections`men.html`Men's sneaker collection`women.html`Women's sneaker collection`kids.html`Kids' sneaker collection`team.html`Information about the project team`contact.html`Contact information and contact section
+## ✨ Features
 
-- Адаптивная верстка под мобильные и десктопные устройства
-- Современный дизайн с использованием оранжевой цветовой схемы
-- Карточки товаров и категории
-- Панель навигации и фильтры
-- Баннеры и визуальные секции для продвижения коллекций
+- 📱 Responsive design for mobile, tablet, and desktop
+- 🧭 Navigation between all website pages
+- 👟 Product cards and sneaker collections
+- 🔎 Category and filtering elements
+- 🖼️ Promotional banners and visual sections
+- 🎨 Consistent orange-based color scheme
+- 📐 Responsive layouts using Bootstrap and CSS
+- 👥 Team information page
+- 📞 Contact page
 
-## Технологии
+## 🛠️ Technologies
+The project was developed using:
 
-- HTML5
-- CSS3
-- Bootstrap 5
-- JavaScript (подключён через Bootstrap bundle)
+- **HTML5** — structure and content of the website
+- **CSS3** — styling, layouts, and responsive design
+- **Bootstrap 5** — responsive grid system and UI components
 
-## Структура проекта
+## 📁 Project Structure
 
-```text
+```
 kickslab-assignment/
+│
 ├── index.html
 ├── men.html
 ├── women.html
 ├── kids.html
 ├── team.html
 ├── contact.html
+│
 ├── css/
 │   └── style.css
+│
 ├── images/
-├── README.md
-└── .git/
+│   └── ...
+│
+└── README.md
 ```
 
-## Запуск проекта
+## 📱 Responsive Design
+KicksLab is designed to provide a consistent experience across different screen sizes:
 
-Так как это статический сайт, его можно открыть напрямую в браузере или запустить локальный сервер.
+- 💻 Desktop
+- 📱 Mobile
+- 📲 Tablet
+Bootstrap's responsive grid system and CSS media queries are used to adapt the website layout to different devices.
 
-### Вариант 1: открыть файл напрямую
+## 👥 Team
+NameYersultan SansyzbayAlmas BekenovDinmukhamed Bolat
+## 🌐 Deployment
+The project is deployed using **GitHub Pages**.
 
-Откройте `index.html` в браузере.
+**Live Website:**
+[https://almas-bo.github.io/web](https://almas-bo.github.io/web)
 
-### Вариант 2: локальный сервер
+**GitHub Repository:**
+[https://github.com/Almas-bo/web](https://github.com/Almas-bo/web)
 
-```bash
-python -m http.server 8000
-```
+## 🎓 Project Purpose
+KicksLab was created as an educational project to demonstrate practical knowledge of:
 
-После этого откройте в браузере:
+- HTML page structure
+- CSS styling
+- Bootstrap framework
+- Responsive web design
+- Flexbox and layout techniques
+- Multi-page website development
+- Git and GitHub
+- Website deployment using GitHub Pages
 
-```text
-http://localhost:8000
-```
-
-## Команда проекта
-
-- Yersultan Sansyzbay
-- Almas Bekenov
-- Dinmukhamed Bolat
-
-## Ссылка на проект
-
-Репозиторий проекта размещён на GitHub и связан с веткой `main`.
-
-## Лицензия
-
-Проект распространяется как учебный пример и предназначен для демонстрации верстки и дизайна интернет-магазина.
+## 📄 License
+This project was created for educational purposes as part of a university web development assignment.
