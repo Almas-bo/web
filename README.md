@@ -1,95 +1,53 @@
 # KicksLab 👟
-**KicksLab** is a modern multi-page online sneaker store developed as part of a university web development project.
 
-The website provides a stylish storefront for sneakers and sports footwear, with separate collections for men, women, and kids, as well as dedicated team and contact pages.
+KicksLab is a modern multi-page sneaker store built as a university web development project. The website provides a polished storefront experience with separate sections for men, women, and kids, along with a team page and a contact form.
 
-## 📌 About the Project
-The main goal of KicksLab is to create a modern, responsive, and user-friendly e-commerce website using **HTML5, CSS3, and Bootstrap 5**.
+## Team
+- Yersultan Sansyzbay
+- Almas Bekenov
+- Dinmukhamed Bolat
 
-The project focuses on:
+## Project Overview
+This project focuses on creating a responsive, visually clean, and user-friendly storefront using HTML, CSS, and Bootstrap. The design emphasizes a sleek orange-and-dark theme, promotional product cards, and easy navigation across multiple pages.
 
-- Modern and clean user interface
-- Responsive design
-- Easy navigation
-- Product collections
-- Category-based organization
-- Consistent visual style
-- User-friendly experience
+## Pages
+- `index.html` — home page with featured products and promotional content
+- `men.html` — men's sneaker collection
+- `women.html` — women's sneaker collection
+- `kids.html` — kids' sneaker collection
+- `team.html` — team profile section
+- `contact.html` — contact form and inquiry page
 
-## 📄 Website Pages
-The website consists of the following pages:
+## Technologies Used
+- HTML5
+- CSS3
+- Bootstrap 5
+- Flexbox and responsive layout techniques
 
-PageDescription`index.html`Homepage with featured collections and promotional sections`men.html`Men's sneaker collection`women.html`Women's sneaker collection`kids.html`Kids' sneaker collection`team.html`Information about the project team`contact.html`Contact information and contact section
-## ✨ Features
+## Responsive Design
+The layout adapts for:
+- Desktop
+- Tablet
+- Mobile
 
-- 📱 Responsive design for mobile, tablet, and desktop
-- 🧭 Navigation between all website pages
-- 👟 Product cards and sneaker collections
-- 🔎 Category and filtering elements
-- 🖼️ Promotional banners and visual sections
-- 🎨 Consistent orange-based color scheme
-- 📐 Responsive layouts using Bootstrap and CSS
-- 👥 Team information page
-- 📞 Contact page
+Bootstrap grid classes and custom CSS media queries ensure clear spacing, readable typography, and proper component stacking on smaller screens.
 
-## 🛠️ Technologies
-The project was developed using:
+## Live Website
+https://almas-bo.github.io/web/
 
-- **HTML5** — structure and content of the website
-- **CSS3** — styling, layouts, and responsive design
-- **Bootstrap 5** — responsive grid system and UI components
+## Local Preview
+To run the project locally:
 
-## 📁 Project Structure
-
-```
-kickslab-assignment/
-│
-├── index.html
-├── men.html
-├── women.html
-├── kids.html
-├── team.html
-├── contact.html
-│
-├── css/
-│   └── style.css
-│
-├── images/
-│   └── ...
-│
-└── README.md
+```bash
+cd "c:\web 1 site\web"
+py -m http.server 8000
 ```
 
-## 📱 Responsive Design
-KicksLab is designed to provide a consistent experience across different screen sizes:
+Then open:
 
-- 💻 Desktop
-- 📱 Mobile
-- 📲 Tablet
-Bootstrap's responsive grid system and CSS media queries are used to adapt the website layout to different devices.
+```text
+http://localhost:8000
+```
 
-## 👥 Team
-NameYersultan SansyzbayAlmas BekenovDinmukhamed Bolat
-## 🌐 Deployment
-The project is deployed using **GitHub Pages**.
-
-**Live Website:**
-[https://almas-bo.github.io/web](https://almas-bo.github.io/web)
-
-**GitHub Repository:**
-[https://github.com/Almas-bo/web](https://github.com/Almas-bo/web)
-
-## 🎓 Project Purpose
-KicksLab was created as an educational project to demonstrate practical knowledge of:
-
-- HTML page structure
-- CSS styling
-- Bootstrap framework
-- Responsive web design
-- Flexbox and layout techniques
-- Multi-page website development
-- Git and GitHub
-- Website deployment using GitHub Pages
-
-## 📄 License
-This project was created for educational purposes as part of a university web development assignment.
+## Repository
+https://github.com/Almas-bo/web
