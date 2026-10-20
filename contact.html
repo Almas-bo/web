@@ -24,6 +24,11 @@
                     <li class="nav-item"><a class="nav-link" href="team.html">Team</a></li>
                     <li class="nav-item"><a class="nav-link active" href="contact.html">Contact</a></li>
                 </ul>
+            <div class="d-flex gap-2 ms-lg-3 mt-2 mt-lg-0">
+                <button type="button" class="btn btn-warning btn-sm open-popup">Subscribe</button>
+                <button type="button" class="btn btn-outline-light btn-sm bg-color-btn">🎨 Change Color</button>
+            </div>
+
             </div>
         </div>
     </nav>
@@ -33,14 +38,15 @@
             <div class="col-md-8 col-lg-6">
                 <div class="card p-4 shadow-sm">
                     <h2 class="mb-4 text-center">Contact Us</h2>
-                    <form>
+                    <div class="alert alert-success d-none" id="contactSuccess"></div>
+                    <form id="contactForm" novalidate>
                         <div class="mb-3">
                             <label for="name" class="form-label">Name</label>
-                            <input type="text" class="form-control" id="name" placeholder="Enter your name" required>
+                            <input type="text" class="form-control" id="name" name="name" placeholder="Enter your name">
                         </div>
                         <div class="mb-3">
                             <label for="email" class="form-label">Email address</label>
-                            <input type="email" class="form-control" id="email" placeholder="name@example.com" required>
+                            <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com">
                         </div>
                         <div class="mb-3">
                             <label for="subject" class="form-label">Subject</label>
@@ -52,10 +58,32 @@
                         </div>
                         <div class="mb-3">
                             <label for="message" class="form-label">Message</label>
-                            <textarea class="form-control" id="message" rows="4" placeholder="Write your message..." required></textarea>
+                            <textarea class="form-control" id="message" name="message" rows="4" placeholder="Write your message..."></textarea>
                         </div>
                         <button type="submit" class="btn btn-dark w-100">Send Message</button>
                     </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="row justify-content-center mt-5">
+            <div class="col-md-8 col-lg-6">
+                <h2 class="mb-3 text-center">FAQ</h2>
+                <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false">How long does delivery take?</button>
+                    <div class="faq-answer"><p>Orders are delivered within 3–7 business days across Kazakhstan.</p></div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false">Can I return sneakers?</button>
+                    <div class="faq-answer"><p>Yes, unworn pairs can be returned within 14 days with the original box.</p></div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false">Are the sneakers original?</button>
+                    <div class="faq-answer"><p>All products are 100% authentic and come from official suppliers.</p></div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false">How do I choose my size?</button>
+                    <div class="faq-answer"><p>Measure your foot length in cm and compare it with the size chart on the product page.</p></div>
                 </div>
             </div>
         </div>
@@ -64,9 +92,32 @@
     <footer class="bg-dark text-white text-center py-3 mt-auto">
         <div class="container">
             <p class="mb-0">© 2026 KicksLab. Team Members: Yersultan Sansyzbay, Almas Bekenov, Dinmukhamed Bolat.</p>
+            <p class="mb-0 mt-1 small">🕒 <span id="datetime"></span></p>
         </div>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<div class="popup-overlay" id="signupPopup" role="dialog" aria-modal="true" aria-labelledby="popupTitle">
+    <div class="popup-box">
+        <button type="button" class="popup-close" aria-label="Close">&times;</button>
+        <h4 class="mb-3" id="popupTitle">Subscribe to KicksLab</h4>
+        <div class="alert alert-success d-none" id="signupSuccess"></div>
+        <form id="signupForm" novalidate>
+            <div class="mb-3"><label class="form-label" for="su-name">Name</label>
+                <input type="text" class="form-control" id="su-name" name="name" placeholder="Your name"></div>
+            <div class="mb-3"><label class="form-label" for="su-email">Email</label>
+                <input type="email" class="form-control" id="su-email" name="email" placeholder="name@example.com"></div>
+            <div class="mb-3"><label class="form-label" for="su-pass">Password</label>
+                <input type="password" class="form-control" id="su-pass" name="password" placeholder="Min. 8 characters"></div>
+            <div class="mb-3"><label class="form-label" for="su-confirm">Confirm password</label>
+                <input type="password" class="form-control" id="su-confirm" name="confirm" placeholder="Repeat password"></div>
+            <button type="submit" class="btn btn-dark w-100">Subscribe</button>
+        </form>
+    </div>
+</div>
+
+<script src="js/main.js"></script>
+
 </body>
 </html>
