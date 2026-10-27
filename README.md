@@ -23,6 +23,25 @@ This project focuses on creating a responsive, visually clean, and user-friendly
 - CSS3
 - Bootstrap 5
 - Flexbox and responsive layout techniques
+- JavaScript DOM APIs, events, arrays, objects, and higher-order functions
+
+## Assignment 5: Advanced JavaScript and DOM Manipulation
+
+The shared `js/main.js` file powers the interactive features on all pages:
+
+- The home-page catalog filter uses a product data array, `filter()`, and a `switch` statement to show all products, new arrivals, sale items, or products below $140.
+- The home page has an accessible five-star rating control that updates its selected state and confirmation message.
+- The Day/Night button toggles a site-wide theme using a CSS class; the color button also changes the page background dynamically.
+- Arrow keys move focus through navigation links. Home and End move focus to the first and last link.
+- Add to Cart/Buy Now buttons show a live cart notification, animate the product card, and play a short Web Audio notification sound without overlapping sounds.
+- Contact and subscription forms validate input and display feedback without reloading. Their responses are front-end demonstrations only; they do not send email or create accounts on a server.
+- FAQ answers expand and collapse, and the footer clock updates every second.
+
+HTML, styles, and behavior are kept in separate files. The JavaScript includes arrays, objects, loops, callbacks, `map()`, `filter()`, and `forEach()`.
+
+### Assignment report checklist
+
+`ASSIGNMENT-5-REPORT.pdf` contains the team names, group SE-2506, implementation steps, code and webpage screenshots, reflection, and the project's published URL. Before submission, commit and push the updated files, redeploy the site, and verify that the published version includes these changes.
 
 ## Responsive Design
 The layout adapts for:

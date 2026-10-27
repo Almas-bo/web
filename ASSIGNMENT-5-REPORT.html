@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KicksLab — Assignment 5 Report</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 18mm;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            color: #20242a;
+            font: 11pt/1.5 Arial, sans-serif;
+        }
+
+        h1, h2, h3 {
+            color: #d94b00;
+            line-height: 1.2;
+        }
+
+        h1 {
+            margin-top: 0;
+            font-size: 30pt;
+        }
+
+        h2 {
+            margin-top: 0;
+            font-size: 19pt;
+        }
+
+        h3 {
+            margin-bottom: 5px;
+            font-size: 13pt;
+        }
+
+        p, ul, ol {
+            margin-top: 6px;
+            margin-bottom: 10px;
+        }
+
+        li {
+            margin-bottom: 4px;
+        }
+
+        a {
+            color: #b83e00;
+            overflow-wrap: anywhere;
+        }
+
+        .cover {
+            min-height: 235mm;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .eyebrow {
+            color: #555;
+            font-size: 12pt;
+            font-weight: bold;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .team-card {
+            margin: 20px 0;
+            padding: 18px 22px;
+            border-left: 5px solid #ff5500;
+            background: #f5f6f8;
+        }
+
+        .page-break {
+            break-before: page;
+        }
+
+        .screenshot {
+            display: block;
+            width: 100%;
+            max-height: 245mm;
+            object-fit: contain;
+            object-position: top left;
+            border: 1px solid #d5d9de;
+        }
+
+        .caption {
+            color: #555;
+            font-size: 9pt;
+        }
+
+        .note {
+            padding: 10px 14px;
+            border-left: 4px solid #ff8800;
+            background: #fff6ed;
+        }
+
+        @media screen {
+            body {
+                max-width: 850px;
+                margin: 32px auto;
+                padding: 40px;
+                box-shadow: 0 0 16px #ddd;
+            }
+        }
+    </style>
+</head>
+<body>
+    <section class="cover">
+        <p class="eyebrow">KicksLab · Web Development</p>
+        <h1>Assignment 5</h1>
+        <h2>Advanced JavaScript and DOM Manipulation</h2>
+        <div class="team-card">
+            <p><strong>Group:</strong> SE-2506</p>
+            <p><strong>Team members:</strong></p>
+            <ul>
+                <li>Yersultan Sansyzbay</li>
+                <li>Almas Bekenov</li>
+                <li>Dinmukhamed Bolat</li>
+            </ul>
+        </div>
+        <p><strong>Project:</strong> KicksLab sneaker store</p>
+        <p><strong>Published site:</strong><br>
+            <a href="https://almas-bo.github.io/web/">https://almas-bo.github.io/web/</a>
+        </p>
+        <p><strong>Objective:</strong> Extend the existing responsive sneaker store with interactive JavaScript features that demonstrate DOM manipulation, event handling, data structures, callbacks, sound, and animation.</p>
+    </section>
+
+    <section class="page-break">
+        <h2>Implementation steps</h2>
+        <ol>
+            <li><strong>DOM manipulation and styling.</strong> The shared <code>js/main.js</code> selects elements with <code>querySelector</code>/<code>querySelectorAll</code>, updates messages and counts, changes form classes and FAQ height, switches the day/night CSS class, and updates star-rating attributes. The home-page stars respond to clicks and visibly show the selected rating.</li>
+            <li><strong>Catalog filter and switch statement.</strong> Product cards expose price and status data attributes. JavaScript builds an array of product objects and filters it with <code>Array.filter()</code>. A <code>switch</code> handles All, New, Sale, and Under $140 choices, and the visible item count updates immediately.</li>
+            <li><strong>Events and keyboard access.</strong> Buttons and forms use <code>addEventListener</code>. Arrow keys move focus through navigation links; Home and End focus the first and last link. Contact validation shows an asynchronous callback response without reloading. Its response is explicitly a local demo and does not send email to a server.</li>
+            <li><strong>Objects, arrays, and reusable functions.</strong> Product objects hold each card's data. Validator objects and arrays organize form rules, and reusable functions handle validation, messages, filtering, and updates. <code>map</code>, <code>filter</code>, and <code>forEach</code> demonstrate higher-order iteration.</li>
+            <li><strong>Sound and animation.</strong> Cart actions and star ratings trigger a short Web Audio tone. A single oscillator is stopped before another begins, preventing overlapping sounds. Adding an item triggers a CSS card animation and an accessible live notification.</li>
+            <li><strong>Structure and user experience.</strong> HTML, CSS, and JavaScript remain in separate files. The theme toggle, status messages, accessible labels, responsive Bootstrap layout, and reduced-motion CSS improve usability.</li>
+        </ol>
+
+        <h3>Validation performed</h3>
+        <ul>
+            <li>JavaScript syntax checked with <code>node --check js/main.js</code>.</li>
+            <li><code>git diff --check</code> passed with no whitespace errors.</li>
+            <li>All six pages loaded in the browser with no JavaScript page errors.</li>
+            <li>Catalog counts verified: All = 3, New = 1, Sale = 1, Under $140 = 1.</li>
+            <li>Browser interactions verified for theme toggle, rating, cart notice/sound action, keyboard focus movement, and contact form feedback.</li>
+        </ul>
+
+        <h3>Challenges and reflection</h3>
+        <p>The existing project had no server endpoint for contact or account registration. Rather than claim that messages were delivered or accounts created, the interface now clearly identifies those responses as front-end demonstrations. The project keeps data local to the page and remains deployable as a static site. Testing the filters and keyboard behavior helped catch and verify the exact visible results.</p>
+        <p class="note"><strong>Before submission:</strong> Commit and push the updated files, redeploy the site, and confirm the published page reflects these changes. The URL above is the project's existing GitHub Pages address.</p>
+    </section>
+
+    <section class="page-break">
+        <h2>Code screenshot</h2>
+        <p>This JavaScript excerpt shows the catalog filter using an array, a higher-order function, and a switch statement. The implementation is in <code>js/main.js</code>.</p>
+        <img class="screenshot" src="assignment-code.png" alt="Screenshot of JavaScript code excerpts">
+        <p class="caption">Figure 1. JavaScript filter function from the Assignment 5 implementation.</p>
+    </section>
+
+    <section class="page-break">
+        <h2>Resulting webpage screenshot</h2>
+        <p>The updated KicksLab home page displays the product filter, interactive product cards, theme control, and five-star rating component.</p>
+        <img class="screenshot" src="assignment-home.png" alt="Screenshot of the KicksLab home page">
+        <p class="caption">Figure 2. KicksLab home page captured from the local updated project.</p>
+    </section>
+</body>
+</html>

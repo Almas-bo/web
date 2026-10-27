@@ -27,6 +27,7 @@
             <div class="d-flex gap-2 ms-lg-3 mt-2 mt-lg-0">
                 <button type="button" class="btn btn-warning btn-sm open-popup">Subscribe</button>
                 <button type="button" class="btn btn-outline-light btn-sm bg-color-btn">🎨 Change Color</button>
+                <button type="button" class="btn btn-outline-light btn-sm theme-toggle" aria-pressed="false">🌙 Night mode</button>
             </div>
 
             </div>
@@ -42,10 +43,10 @@
                 <div class="sidebar-card p-3 rounded shadow-sm bg-white mb-4">
                     <h5 class="fw-bold mb-3 sidebar-title">Categories</h5>
                     <ul class="nav flex-column nav-pills sidebar-nav">
-                        <li class="nav-item"><a class="nav-link active" href="index.html">All Products <span class="badge bg-light text-dark float-end">48</span></a></li>
-                        <li class="nav-item"><a class="nav-link" href="men.html">Men's Sneakers <span class="badge bg-light text-dark float-end">20</span></a></li>
-                        <li class="nav-item"><a class="nav-link" href="women.html">Women's Sneakers <span class="badge bg-light text-dark float-end">16</span></a></li>
-                        <li class="nav-item"><a class="nav-link" href="kids.html">Kids' Shoes <span class="badge bg-light text-dark float-end">12</span></a></li>
+                        <li class="nav-item"><a class="nav-link active" href="index.html">All Products <span class="badge bg-light text-dark float-end">15</span></a></li>
+                        <li class="nav-item"><a class="nav-link" href="men.html">Men's Sneakers <span class="badge bg-light text-dark float-end">4</span></a></li>
+                        <li class="nav-item"><a class="nav-link" href="women.html">Women's Sneakers <span class="badge bg-light text-dark float-end">4</span></a></li>
+                        <li class="nav-item"><a class="nav-link" href="kids.html">Kids' Shoes <span class="badge bg-light text-dark float-end">4</span></a></li>
                     </ul>
 
                     <h5 class="fw-bold my-3 sidebar-title">Popular Brands</h5>
@@ -57,17 +58,7 @@
                         <li class="nav-item"><a class="nav-link py-1" href="#">Puma</a></li>
                     </ul>
 
-                    <h5 class="fw-bold my-3 sidebar-title">Quick Filters</h5>
-                    <div class="form-check mb-2">
-                        <input class="form-check-input" type="checkbox" id="saleCheck">
-                        <label class="form-check-label fw-semibold" for="saleCheck">On Sale 🔥</label>
-                    </div>
-                    <div class="form-check mb-3">
-                        <input class="form-check-input" type="checkbox" id="newCheck" checked>
-                        <label class="form-check-label fw-semibold" for="newCheck">New Arrivals ✨</label>
-                    </div>
-
-                    <button class="btn btn-outline-primary w-100 btn-sm fw-bold">Apply Filters</button>
+                    <p class="small text-muted mb-0">Use the catalog filter to browse new arrivals, sale picks, and budget-friendly pairs.</p>
                 </div>
             </aside>
 
@@ -82,40 +73,62 @@
 
                
                 <h3 class="mb-3 fw-bold">Featured Sneakers</h3>
-                <div class="row g-4">
-                    <div class="col-12 col-md-6 col-xl-4">
+                <div class="mb-3 d-flex flex-wrap align-items-center gap-2">
+                    <label class="fw-semibold" for="productFilter">Filter products:</label>
+                    <select class="form-select w-auto" id="productFilter">
+                        <option value="all">All products</option>
+                        <option value="new">New arrivals</option>
+                        <option value="sale">On sale</option>
+                        <option value="under-140">Under $140</option>
+                    </select>
+                    <span id="productCount" class="text-muted" aria-live="polite"></span>
+                </div>
+                <div class="row g-4" id="featuredProducts">
+                    <div class="col-12 col-md-6 col-xl-4" data-product-card data-new="false" data-sale="true" data-price="149.99">
                         <div class="card h-100 shadow-sm">
-                            <span class="badge-overlay">HOT</span>
-                            <img src="https://i.pinimg.com/1200x/f9/80/32/f980324b7cc7e1e9ec28a3bac93122a0.jpg" class="card-img-top" alt="Sneaker">
+                            <span class="badge-overlay">SALE</span>
+                            <img src="images/shoe_men1.jpg" class="card-img-top" alt="Air Nitro 2026 running sneaker">
                             <div class="card-body d-flex flex-column">
                                 <h5 class="card-title">Air Nitro 2026</h5>
                                 <p class="card-text text-muted">$149.99</p>
-                                <button class="btn btn-dark mt-auto">Add to Cart</button>
+                                <button type="button" class="btn btn-dark mt-auto" data-cart-action>Add to Cart</button>
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 col-md-6 col-xl-4">
+                    <div class="col-12 col-md-6 col-xl-4" data-product-card data-new="true" data-sale="false" data-price="129.99">
                         <div class="card h-100 shadow-sm">
                             <span class="badge-overlay">NEW</span>
-                            <img src="https://static.nike.com/a/images/t_web_pdp_535_v2/f_auto,u_9ddf04c7-2a9a-4d76-add1-d15af8f0263d,c_scale,fl_relative,w_1.0,h_1.0,fl_layer_apply/d7e68705-dcc5-4201-ba30-193d2a8ccb59/NIKE+ACG+ZEGAMA+TRAIL+GTX.png" class="card-img-top" alt="Sneaker">
+                            <img src="images/trainerspro.jpg" class="card-img-top" alt="Urban Glide X performance sneaker">
                             <div class="card-body d-flex flex-column">
                                 <h5 class="card-title">Urban Glide X</h5>
                                 <p class="card-text text-muted">$129.99</p>
-                                <button class="btn btn-dark mt-auto">Add to Cart</button>
+                                <button type="button" class="btn btn-dark mt-auto" data-cart-action>Add to Cart</button>
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 col-md-6 col-xl-4">
+                    <div class="col-12 col-md-6 col-xl-4" data-product-card data-new="false" data-sale="false" data-price="159.99">
                         <div class="card h-100 shadow-sm">
-                            <img src="https://static.nike.com/a/images/t_web_pdp_535_v2/f_auto,u_9ddf04c7-2a9a-4d76-add1-d15af8f0263d,c_scale,fl_relative,w_1.0,h_1.0,fl_layer_apply/5e7687f1-c13e-4bac-8ffa-a6f863ae9157/NIKE+DUNK+HI+RETRO.png" class="card-img-top" alt="Sneaker">
+                            <img src="images/shoe_men2.jpg" class="card-img-top" alt="Retro Street High sneakers">
                             <div class="card-body d-flex flex-column">
                                 <h5 class="card-title">Retro Street High</h5>
                                 <p class="card-text text-muted">$159.99</p>
-                                <button class="btn btn-dark mt-auto">Add to Cart</button>
+                                <button type="button" class="btn btn-dark mt-auto" data-cart-action>Add to Cart</button>
                             </div>
                         </div>
                     </div>
                 </div>
+                <section class="rating-panel mt-5 p-4 rounded shadow-sm bg-white" aria-labelledby="ratingTitle">
+                    <h3 class="h5 fw-bold" id="ratingTitle">Enjoying KicksLab?</h3>
+                    <p class="mb-2">Rate your shopping experience:</p>
+                    <div class="rating-stars" role="group" aria-label="Rate your experience from 1 to 5 stars">
+                        <button type="button" class="rating-star" data-rating="1" aria-label="1 star" aria-pressed="false">★</button>
+                        <button type="button" class="rating-star" data-rating="2" aria-label="2 stars" aria-pressed="false">★</button>
+                        <button type="button" class="rating-star" data-rating="3" aria-label="3 stars" aria-pressed="false">★</button>
+                        <button type="button" class="rating-star" data-rating="4" aria-label="4 stars" aria-pressed="false">★</button>
+                        <button type="button" class="rating-star" data-rating="5" aria-label="5 stars" aria-pressed="false">★</button>
+                    </div>
+                    <p id="ratingMessage" class="mb-0 mt-2 text-muted" aria-live="polite">Choose a rating to share your feedback.</p>
+                </section>
             </section>
 
         </div>

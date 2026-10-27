@@ -424,3 +424,125 @@ footer {
 .popup-close { position: absolute; top: 10px; right: 14px; border: 0; background: none; font-size: 1.8rem; line-height: 1; cursor: pointer; }
 body.popup-open { overflow: hidden; }
 @keyframes popFade { from { opacity: 0; transform: scale(.96); } to { opacity: 1; transform: scale(1); } }
+
+.theme-toggle {
+    white-space: nowrap;
+}
+
+body,
+.card,
+.sidebar-card,
+.rating-panel,
+.faq-item,
+.popup-box {
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body.theme-night {
+    background-color: #17191f !important;
+    color: #f1f3f5;
+}
+
+.theme-night .bg-white,
+.theme-night .card,
+.theme-night .sidebar-card,
+.theme-night .rating-panel,
+.theme-night .faq-item,
+.theme-night .popup-box {
+    background-color: #252932 !important;
+    color: #f1f3f5;
+}
+
+.theme-night .sidebar-title,
+.theme-night .card-title,
+.theme-night .form-label,
+.theme-night .faq-question,
+.theme-night .rating-panel p,
+.theme-night .text-muted,
+.theme-night .sidebar-nav .nav-link {
+    color: #d3d7df !important;
+}
+
+.theme-night .faq-question:hover,
+.theme-night .form-control,
+.theme-night .form-select {
+    background-color: #303540;
+    color: #f1f3f5;
+}
+
+.theme-night .faq-answer p {
+    color: #d3d7df;
+}
+
+.theme-night .form-control::placeholder {
+    color: #aeb5c0;
+}
+
+.theme-night .faq-item {
+    border-color: #454b56;
+}
+
+.rating-stars {
+    display: flex;
+    gap: 0.25rem;
+}
+
+.rating-star {
+    padding: 0 0.2rem;
+    border: 0;
+    background: transparent;
+    color: #adb5bd;
+    font-size: 2rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.rating-star:hover,
+.rating-star.selected {
+    color: #ffb000;
+}
+
+.rating-star:hover {
+    transform: scale(1.2);
+}
+
+.shop-notice {
+    position: fixed;
+    right: 1rem;
+    bottom: 1rem;
+    z-index: 2100;
+    max-width: min(24rem, calc(100vw - 2rem));
+    padding: 0.9rem 1.2rem;
+    border-radius: 0.75rem;
+    background: #17191f;
+    color: #fff;
+    box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.25);
+    opacity: 0;
+    transform: translateY(1rem);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.shop-notice.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.cart-bump {
+    animation: cartBump 0.35s ease;
+}
+
+@keyframes cartBump {
+    50% { transform: scale(1.03); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}

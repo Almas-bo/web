@@ -15,11 +15,6 @@ function applyBg(color) {
     document.body.style.transition = 'background-color 0.5s ease';
     document.body.style.backgroundColor = color;
 }
-try {
-    const saved = localStorage.getItem('bgColor');
-    if (saved) applyBg(saved);
-} catch (e) {  }
-
 document.querySelectorAll('.bg-color-btn').forEach(function (btn) {
     btn.addEventListener('click', function () {
         const current = document.body.style.backgroundColor;
@@ -28,7 +23,6 @@ document.querySelectorAll('.bg-color-btn').forEach(function (btn) {
             color = bgColors[Math.floor(Math.random() * bgColors.length)];
         } while (bgColors.length > 1 && toRgb(color) === current);
         applyBg(color);
-        try { localStorage.setItem('bgColor', color); } catch (e) {}
     });
 });
 function toRgb(hex) {
@@ -108,9 +102,17 @@ if (contactForm) {
         box.classList.add('d-none');
         const results = Object.keys(validators).map(function (k) { return validators[k](); });
         if (results.every(Boolean)) {
-            showAlert(box, 'Thank you, ' + f.name.value.trim() + '! Your message has been sent.');
-            contactForm.reset();
-            clearState(contactForm);
+            const submitButton = contactForm.querySelector('[type="submit"]');
+            const submittedName = f.name.value.trim();
+            submitButton.disabled = true;
+            submitButton.textContent = 'Sending...';
+            window.setTimeout(function () {
+                showAlert(box, 'Thanks, ' + submittedName + '! Your message passed validation. This project demo does not connect to a mail server.');
+                contactForm.reset();
+                clearState(contactForm);
+                submitButton.disabled = false;
+                submitButton.textContent = 'Send Message';
+            }, 450);
         }
     });
     Object.keys(validators).forEach(function (k) {
@@ -145,7 +147,7 @@ if (popup) {
         box.classList.add('d-none');
         const results = Object.keys(validators).map(function (k) { return validators[k](); });
         if (results.every(Boolean)) {
-            showAlert(box, 'Welcome to KicksLab, ' + f.name.value.trim() + '! You are subscribed.');
+            showAlert(box, 'Thanks, ' + f.name.value.trim() + '! This signup demo does not create an account yet.');
             form.reset();
             clearState(form);
             setTimeout(closePopup, 2000);
@@ -168,3 +170,145 @@ document.querySelectorAll('.faq-item').forEach(function (item) {
         a.style.maxHeight = open ? a.scrollHeight + 'px' : '0px';
     });
 });
+
+document.querySelectorAll('.theme-toggle').forEach(function (button) {
+    button.addEventListener('click', function () {
+        const isNight = document.body.classList.toggle('theme-night');
+        button.setAttribute('aria-pressed', String(isNight));
+        button.textContent = isNight ? '☀️ Day mode' : '🌙 Night mode';
+    });
+});
+
+document.querySelectorAll('.navbar-nav').forEach(function (menu) {
+    menu.addEventListener('keydown', function (event) {
+        const menuLinks = Array.from(menu.querySelectorAll('a[href]'));
+        const currentIndex = menuLinks.indexOf(document.activeElement);
+        if (currentIndex === -1) return;
+
+        let nextIndex = currentIndex;
+        switch (event.key) {
+            case 'ArrowRight':
+            case 'ArrowDown':
+                nextIndex = (currentIndex + 1) % menuLinks.length;
+                break;
+            case 'ArrowLeft':
+            case 'ArrowUp':
+                nextIndex = (currentIndex - 1 + menuLinks.length) % menuLinks.length;
+                break;
+            case 'Home':
+                nextIndex = 0;
+                break;
+            case 'End':
+                nextIndex = menuLinks.length - 1;
+                break;
+            default:
+                return;
+        }
+
+        event.preventDefault();
+        menuLinks[nextIndex].focus();
+    });
+});
+
+const productFilter = document.getElementById('productFilter');
+if (productFilter) {
+    const products = Array.from(document.querySelectorAll('[data-product-card]'), function (card) {
+        return {
+            element: card,
+            isNew: card.dataset.new === 'true',
+            isSale: card.dataset.sale === 'true',
+            price: Number(card.dataset.price)
+        };
+    });
+    const count = document.getElementById('productCount');
+
+    function filterProducts(filter) {
+        return products.filter(function (product) {
+            switch (filter) {
+                case 'new':
+                    return product.isNew;
+                case 'sale':
+                    return product.isSale;
+                case 'under-140':
+                    return product.price < 140;
+                case 'all':
+                default:
+                    return true;
+            }
+        });
+    }
+
+    function renderProducts() {
+        const visibleProducts = filterProducts(productFilter.value);
+        products.forEach(function (product) {
+            product.element.hidden = !visibleProducts.includes(product);
+        });
+        count.textContent = visibleProducts.length + ' product' + (visibleProducts.length === 1 ? '' : 's');
+    }
+
+    productFilter.addEventListener('change', renderProducts);
+    renderProducts();
+}
+
+document.querySelectorAll('.rating-star').forEach(function (star) {
+    star.addEventListener('click', function () {
+        const rating = Number(star.dataset.rating);
+        document.querySelectorAll('.rating-star').forEach(function (item) {
+            const isSelected = Number(item.dataset.rating) <= rating;
+            item.classList.toggle('selected', isSelected);
+            item.setAttribute('aria-pressed', String(isSelected));
+        });
+        const message = document.getElementById('ratingMessage');
+        message.textContent = 'Thank you for rating KicksLab ' + rating + ' out of 5 stars!';
+        playNotificationSound();
+    });
+});
+
+const notice = document.createElement('div');
+notice.className = 'shop-notice';
+notice.setAttribute('role', 'status');
+notice.setAttribute('aria-live', 'polite');
+document.body.appendChild(notice);
+
+let noticeTimeout;
+document.querySelectorAll('[data-cart-action]').forEach(function (button) {
+    button.addEventListener('click', function () {
+        const card = button.closest('.card');
+        const productName = card.querySelector('.card-title').textContent.trim();
+        notice.textContent = productName + ' added to your demo cart.';
+        notice.classList.add('show');
+        card.classList.remove('cart-bump');
+        void card.offsetWidth;
+        card.classList.add('cart-bump');
+        playNotificationSound();
+        window.clearTimeout(noticeTimeout);
+        noticeTimeout = window.setTimeout(function () {
+            notice.classList.remove('show');
+        }, 2400);
+    });
+});
+
+let audioContext;
+let activeSound;
+function playNotificationSound() {
+    const AudioContextConstructor = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContextConstructor) return;
+
+    if (!audioContext) audioContext = new AudioContextConstructor();
+    if (activeSound) activeSound.stop();
+
+    const oscillator = audioContext.createOscillator();
+    const volume = audioContext.createGain();
+    oscillator.type = 'sine';
+    oscillator.frequency.value = 660;
+    volume.gain.setValueAtTime(0.08, audioContext.currentTime);
+    volume.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.12);
+    oscillator.connect(volume);
+    volume.connect(audioContext.destination);
+    activeSound = oscillator;
+    oscillator.onended = function () {
+        if (activeSound === oscillator) activeSound = null;
+    };
+    oscillator.start();
+    oscillator.stop(audioContext.currentTime + 0.12);
+}
