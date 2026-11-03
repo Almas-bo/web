@@ -88,33 +88,22 @@ function showAlert(box, text) {
     box.classList.remove('d-none');
 }
 
+window.KicksLabValidation = {
+    clearState: clearState,
+    showAlert: showAlert,
+    contact: {},
+    signup: {}
+};
+
 const contactForm = document.getElementById('contactForm');
 if (contactForm) {
     const f = contactForm.elements;
-    const box = document.getElementById('contactSuccess');
     const validators = {
         name: function () { return checkName(f.name); },
         email: function () { return checkEmail(f.email); },
         message: function () { return checkMessage(f.message); }
     };
-    contactForm.addEventListener('submit', function (e) {
-        e.preventDefault();
-        box.classList.add('d-none');
-        const results = Object.keys(validators).map(function (k) { return validators[k](); });
-        if (results.every(Boolean)) {
-            const submitButton = contactForm.querySelector('[type="submit"]');
-            const submittedName = f.name.value.trim();
-            submitButton.disabled = true;
-            submitButton.textContent = 'Sending...';
-            window.setTimeout(function () {
-                showAlert(box, 'Thanks, ' + submittedName + '! Your message passed validation. This project demo does not connect to a mail server.');
-                contactForm.reset();
-                clearState(contactForm);
-                submitButton.disabled = false;
-                submitButton.textContent = 'Send Message';
-            }, 450);
-        }
-    });
+    window.KicksLabValidation.contact = validators;
     Object.keys(validators).forEach(function (k) {
         f[k].addEventListener('input', function () {
             if (f[k].classList.contains('is-invalid')) validators[k]();
@@ -135,24 +124,13 @@ if (popup) {
 
     const form = document.getElementById('signupForm');
     const f = form.elements;
-    const box = document.getElementById('signupSuccess');
     const validators = {
         name: function () { return checkName(f.name); },
         email: function () { return checkEmail(f.email); },
         password: function () { return checkPassword(f.password); },
         confirm: function () { return checkConfirm(f.password, f.confirm); }
     };
-    form.addEventListener('submit', function (e) {
-        e.preventDefault();
-        box.classList.add('d-none');
-        const results = Object.keys(validators).map(function (k) { return validators[k](); });
-        if (results.every(Boolean)) {
-            showAlert(box, 'Thanks, ' + f.name.value.trim() + '! This signup demo does not create an account yet.');
-            form.reset();
-            clearState(form);
-            setTimeout(closePopup, 2000);
-        }
-    });
+    window.KicksLabValidation.signup = validators;
     Object.keys(validators).forEach(function (k) {
         f[k].addEventListener('input', function () {
             if (f[k].classList.contains('is-invalid')) validators[k]();
@@ -210,46 +188,6 @@ document.querySelectorAll('.navbar-nav').forEach(function (menu) {
     });
 });
 
-const productFilter = document.getElementById('productFilter');
-if (productFilter) {
-    const products = Array.from(document.querySelectorAll('[data-product-card]'), function (card) {
-        return {
-            element: card,
-            isNew: card.dataset.new === 'true',
-            isSale: card.dataset.sale === 'true',
-            price: Number(card.dataset.price)
-        };
-    });
-    const count = document.getElementById('productCount');
-
-    function filterProducts(filter) {
-        return products.filter(function (product) {
-            switch (filter) {
-                case 'new':
-                    return product.isNew;
-                case 'sale':
-                    return product.isSale;
-                case 'under-140':
-                    return product.price < 140;
-                case 'all':
-                default:
-                    return true;
-            }
-        });
-    }
-
-    function renderProducts() {
-        const visibleProducts = filterProducts(productFilter.value);
-        products.forEach(function (product) {
-            product.element.hidden = !visibleProducts.includes(product);
-        });
-        count.textContent = visibleProducts.length + ' product' + (visibleProducts.length === 1 ? '' : 's');
-    }
-
-    productFilter.addEventListener('change', renderProducts);
-    renderProducts();
-}
-
 document.querySelectorAll('.rating-star').forEach(function (star) {
     star.addEventListener('click', function () {
         const rating = Number(star.dataset.rating);
@@ -264,27 +202,13 @@ document.querySelectorAll('.rating-star').forEach(function (star) {
     });
 });
 
-const notice = document.createElement('div');
-notice.className = 'shop-notice';
-notice.setAttribute('role', 'status');
-notice.setAttribute('aria-live', 'polite');
-document.body.appendChild(notice);
-
-let noticeTimeout;
 document.querySelectorAll('[data-cart-action]').forEach(function (button) {
     button.addEventListener('click', function () {
         const card = button.closest('.card');
-        const productName = card.querySelector('.card-title').textContent.trim();
-        notice.textContent = productName + ' added to your demo cart.';
-        notice.classList.add('show');
         card.classList.remove('cart-bump');
         void card.offsetWidth;
         card.classList.add('cart-bump');
         playNotificationSound();
-        window.clearTimeout(noticeTimeout);
-        noticeTimeout = window.setTimeout(function () {
-            notice.classList.remove('show');
-        }, 2400);
     });
 });
 

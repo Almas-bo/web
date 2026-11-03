@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KicksLab - Contact</title>
+    <script src="https://code.jquery.com/jquery-4.0.0.min.js"></script>
+    <script src="js/script.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
 </head>
@@ -70,6 +72,11 @@
         <div class="row justify-content-center mt-5">
             <div class="col-md-8 col-lg-6">
                 <h2 class="mb-3 text-center">FAQ</h2>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold" for="faqSearch">Search FAQ</label>
+                    <input id="faqSearch" class="form-control" type="search" placeholder="Search questions and answers..." aria-label="Search the FAQ" autocomplete="off">
+                    <div id="faqMatchSummary" class="small text-muted mt-2" aria-live="polite"></div>
+                </div>
                 <div class="faq-item">
                     <button class="faq-question" aria-expanded="false">How long does delivery take?</button>
                     <div class="faq-answer"><p>Orders are delivered within 3–7 business days across Kazakhstan.</p></div>
@@ -85,6 +92,14 @@
                 <div class="faq-item">
                     <button class="faq-question" aria-expanded="false">How do I choose my size?</button>
                     <div class="faq-answer"><p>Measure your foot length in cm and compare it with the size chart on the product page.</p></div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false">Do you offer a warranty on shoes?</button>
+                    <div class="faq-answer"><p>We provide a 30-day quality guarantee for manufacturing issues and fit concerns.</p></div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false">Can I track my order after purchase?</button>
+                    <div class="faq-answer"><p>Yes, after payment confirmation you receive a tracking number by email with live updates.</p></div>
                 </div>
             </div>
         </div>
