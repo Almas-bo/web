@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sneaker Weather — KicksLab</title>
+    <meta name="description" content="Live weather from Open-Meteo with sneaker recommendations.">
+    <meta name="color-scheme" content="light dark">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%23d1430c'/%3E%3Cpath d='M4 16v-2.500c0-.7.4-1.300 1-1.600L9 9.500l1.300 1.500c.3.400.8.600 1.300.6H14c1.300 0 1.900.3 3 1l2.500 1.500c.8.400 1.300 1.200 1.300 2V16a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z' fill='white'/%3E%3C/svg%3E">
+    <script>
+        /* apply the saved theme before first paint to avoid a white flash */
+        (function () {
+            document.documentElement.classList.add("js");
+            var t = null;
+            try { t = JSON.parse(localStorage.getItem("kl_theme")); } catch (e) {}
+            if (!t && window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches) t = "dark";
+            document.documentElement.setAttribute("data-theme", t === "dark" ? "dark" : "light");
+        })();
+    </script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="weather">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header">
+    <div class="container nav">
+        <a class="brand" href="index.html" aria-label="KicksLab home"><svg class="brand-mark" width="30" height="30" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M2 17v-3c0-.8.4-1.500 1.100-1.900L8 9.500l1.500 1.800c.4.500 1 .7 1.600.7H14c1.500 0 2.200.4 3.500 1.200l3 1.800c.9.500 1.500 1.400 1.500 2.400V17a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1z"/></svg><span>KicksLab</span></a>
+        <ul class="nav-links" id="navLinks">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="shop.html">Shop</a></li>
+                <li><a href="weather.html">Sneaker Weather</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html">Contact</a></li>
+        </ul>
+        <div class="nav-actions">
+            <div id="authSlot" class="nav-actions"><a class="btn btn-sm btn-ghost-light" href="login.html">Log in</a></div>
+            <button type="button" class="icon-btn" data-cart-open aria-label="Open cart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.600h9.700a2 2 0 0 0 2-1.600L23 6H6"/></svg><span class="badge" data-cart-count hidden>0</span></button>
+            <button type="button" class="theme-switch" data-theme-toggle role="switch" aria-pressed="false" aria-label="Switch to dark mode" title="Light / dark mode"><span class="knob"><svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></span></button>
+        </div>
+        <button type="button" class="icon-btn menu-toggle" id="menuToggle" aria-expanded="false" aria-controls="navLinks" aria-label="Toggle menu">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+        </button>
+    </div>
+</header>
+<main id="main">
+    <div class="container">
+        <div class="page-title"><span class="eyebrow">Live API demo</span><h1>Sneaker Weather</h1>
+            <p>Type a city. We fetch the current weather from the free Open-Meteo service and recommend sneakers from our catalogue that suit it.</p></div>
+
+        <form class="card" id="cityForm" novalidate style="margin-bottom:1.2rem">
+            <div class="inline-form">
+                <div class="field">
+                    <label class="sr-only" for="city">City</label>
+                    <input class="input" id="city" name="city" type="text" placeholder="City, e.g. Almaty" autocomplete="off">
+                    <div class="field-error" role="alert"></div>
+                </div>
+                <button type="submit" class="btn">Check weather</button>
+            </div>
+            <div class="chips" style="margin-top:.9rem" aria-label="Quick cities">
+                <button type="button" class="chip" data-city="Astana">Astana</button>
+                <button type="button" class="chip" data-city="Almaty">Almaty</button>
+                <button type="button" class="chip" data-city="London">London</button>
+                <button type="button" class="chip" data-city="Tokyo">Tokyo</button>
+                <button type="button" class="chip" data-city="Dubai">Dubai</button>
+            </div>
+        </form>
+
+        <div id="weatherStatus" class="status" hidden></div>
+
+        <div id="weatherResult" hidden>
+            <div class="weather-grid">
+                <div class="card weather-now">
+                    <h2 id="wPlace" style="font-size:1.3rem"></h2>
+                    <div class="emoji" id="wIcon" aria-hidden="true"></div>
+                    <div class="big" id="wTemp"></div>
+                    <div id="wText" style="color:var(--muted);font-weight:600"></div>
+                    <div class="weather-meta">
+                        <span>Feels like <strong id="wFeels"></strong></span>
+                        <span>Wind <strong id="wWind"></strong></span>
+                        <span>Humidity <strong id="wHumidity"></strong></span>
+                    </div>
+                </div>
+                <div class="card">
+                    <span class="eyebrow">Our recommendation</span>
+                    <h2 style="font-size:1.4rem">What to wear on your feet</h2>
+                    <p id="wWhy" style="color:var(--muted)"></p>
+                    <p class="hint">Data: Open-Meteo.com (free public API). Suggestions are matched using tags on each product.</p>
+                </div>
+            </div>
+            <h2 style="margin-top:2rem">Matching sneakers</h2>
+            <div class="rec-list" id="wPicks"></div>
+        </div>
+    </div>
+</main>
+<footer class="site-footer">
+    <div class="container footer-grid">
+        <div>
+            <h4>KicksLab</h4>
+            <p>Sneakers for the whole family, matched to your day. A student project by group SE-2506.</p>
+        </div>
+        <div>
+            <h4>Explore</h4>
+            <ul>
+                <li><a href="shop.html?cat=men">Men</a></li>
+                <li><a href="shop.html?cat=women">Women</a></li>
+                <li><a href="shop.html?cat=kids">Kids</a></li>
+                <li><a href="weather.html">Sneaker Weather</a></li>
+            </ul>
+        </div>
+        <div>
+            <h4>Company</h4>
+            <ul>
+                <li><a href="about.html">About &amp; team</a></li>
+                <li><a href="contact.html">Contact</a></li>
+                <li><a href="login.html">Log in</a></li>
+                <li><a href="signup.html">Sign up</a></li>
+            </ul>
+        </div>
+        <div class="footer-news">
+            <h4>Drop alerts</h4>
+            <form id="newsletterForm" novalidate>
+                <div class="field" style="margin-bottom:.6rem">
+                    <label class="sr-only" for="newsEmail">Email</label>
+                    <input class="input" id="newsEmail" name="email" type="text" inputmode="email" autocomplete="email" placeholder="you@example.com">
+                    <div class="field-error" role="alert"></div>
+                </div>
+                <button type="submit" class="btn btn-sm btn-block">Subscribe</button>
+                <div class="form-alert" role="status" style="margin:.6rem 0 0"></div>
+            </form>
+        </div>
+    </div>
+    <div class="container footer-bottom">
+        <span>© <span id="year">2026</span> KicksLab. Yersultan Sansyzbay · Almas Bekenov · Dinmukhamed Bolat</span>
+        <span>Final project — Web Development, SE-2506</span>
+    </div>
+</footer>
+<dialog class="cart" id="cartDialog" aria-labelledby="cartTitle">
+    <div class="cart-head"><h2 id="cartTitle" style="margin:0;font-size:1.3rem">Your cart</h2>
+        <button type="button" class="btn btn-outline btn-sm" id="cartClose">Close</button></div>
+    <ul class="cart-list" id="cartList"></ul>
+    <div class="cart-foot">
+        <div class="cart-total"><span>Total</span><span id="cartTotal">$0</span></div>
+        <button type="button" class="btn btn-block" id="checkoutBtn">Checkout</button>
+        <button type="button" class="btn btn-outline btn-block btn-sm" id="cartClear">Clear cart</button>
+    </div>
+</dialog>
+<script src="js/products.js"></script>
+<script src="js/script.js"></script>
+<script src="js/weather.js"></script>
+</body>
+</html>

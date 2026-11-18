@@ -1,630 +1,506 @@
-$(function () {
-    'use strict';
-    console.log("jQuery is ready!");
+/* ==========================================================================
+   KicksLab — core script (loaded on every page)
+   Contents:
+     1. Storage helpers          6. Product card + favourites + cart
+     2. Utilities / toast        7. Currency (REST API: open.er-api.com)
+     3. Theme (light / dark)     8. Newsletter form
+     4. Navigation + auth slot   9. Scroll reveal, footer clock, init
+     5. Form validation engine
+   Everything is exposed on window.KL so page scripts can reuse it.
+   ========================================================================== */
+(function () {
+    "use strict";
 
-    const fallbackProductNames = [
-        'Nike', 'Adidas', 'Jordan', 'New Balance', 'Puma',
-        'Air Nitro 2026', 'Urban Glide X', 'Retro Street High',
-        'Street Flex Women', 'Nova Trail Runner', 'Junior Sprint',
-        'Air Runner Pro', 'Urban Sport High', 'Flex Soft Rose',
-        'Cloud Foam White', 'Mini Runner V2', 'Junior Flash Light'
-    ];
+    const KL = (window.KL = {});
 
-    function escapeRegExp(value) {
-        return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    /* ---------- 1. Storage helpers (safe against disabled storage) ---------- */
+    KL.store = {
+        get(key, fallback) {
+            try {
+                const raw = localStorage.getItem(key);
+                return raw === null ? fallback : JSON.parse(raw);
+            } catch (e) { return fallback; }
+        },
+        set(key, value) {
+            try { localStorage.setItem(key, JSON.stringify(value)); return true; }
+            catch (e) { return false; }
+        },
+        remove(key) { try { localStorage.removeItem(key); } catch (e) { /* ignore */ } }
+    };
+
+    /* ---------- 2. Utilities ---------- */
+    const $ = (sel, root = document) => root.querySelector(sel);
+    const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
+    KL.$ = $; KL.$$ = $$;
+
+    /** Escape user-provided text before inserting it with innerHTML. */
+    KL.esc = (str) => String(str).replace(/[&<>"']/g, (c) => (
+        { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]
+    ));
+
+    /** Small non-blocking notification in the bottom-right corner. */
+    KL.toast = function (message, type) {
+        let wrap = $(".toast-wrap");
+        if (!wrap) {
+            wrap = document.createElement("div");
+            wrap.className = "toast-wrap";
+            wrap.setAttribute("role", "status");
+            wrap.setAttribute("aria-live", "polite");
+            document.body.appendChild(wrap);
+        }
+        const el = document.createElement("div");
+        el.className = "toast" + (type === "error" ? " error" : "");
+        el.textContent = message;
+        wrap.appendChild(el);
+        setTimeout(() => { el.style.opacity = "0"; el.style.transition = "opacity .3s"; }, 2600);
+        setTimeout(() => el.remove(), 3000);
+    };
+
+    /* ---------- 3. Theme (light / dark) — choice is kept in localStorage ---------- */
+    KL.theme = {
+        get() { return document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light"; },
+        set(mode) {
+            document.documentElement.setAttribute("data-theme", mode);
+            KL.store.set("kl_theme", mode);
+            $$("[data-theme-toggle]").forEach((btn) => {
+                btn.setAttribute("aria-pressed", String(mode === "dark"));
+                btn.setAttribute("aria-label", mode === "dark" ? "Switch to light mode" : "Switch to dark mode");
+            });
+        },
+        toggle() { this.set(this.get() === "dark" ? "light" : "dark"); }
+    };
+
+    function initTheme() {
+        KL.theme.set(KL.theme.get());          // sync the switch with the mode applied in <head>
+        $$("[data-theme-toggle]").forEach((btn) => btn.addEventListener("click", () => KL.theme.toggle()));
     }
 
-    // Task 1: Product search, filter and result count
-    function initLiveSearch() {
-        const $searchInput = $('#productSearch');
-        const $cards = $('[data-product-card]');
-        if (!$searchInput.length || !$cards.length) {
-            return;
+    /* ---------- 4. Navigation + authentication state ---------- */
+    KL.auth = {
+        users() { return KL.store.get("kl_users", []); },
+        currentEmail() { return KL.store.get("kl_session", null); },
+        current() {
+            const email = this.currentEmail();
+            return this.users().find((u) => u.email === email) || null;
+        },
+        findByEmail(email) { return this.users().find((u) => u.email === String(email).trim().toLowerCase()); },
+        signup({ name, email, phone, password }) {
+            email = email.trim().toLowerCase();
+            if (this.findByEmail(email)) return { ok: false, error: "An account with this email already exists." };
+            const users = this.users();
+            users.push({ name: name.trim(), email, phone: phone.trim(), password, createdAt: new Date().toISOString() });
+            if (!KL.store.set("kl_users", users)) return { ok: false, error: "Could not save data. Is browser storage disabled?" };
+            return { ok: true };
+        },
+        login(email, password) {
+            const user = this.findByEmail(email);
+            if (!user) return { ok: false, error: "No account found with this email.", field: "email" };
+            if (user.password !== password) return { ok: false, error: "Incorrect password.", field: "password" };
+            KL.store.set("kl_session", user.email);
+            return { ok: true, user };
+        },
+        logout() { KL.store.remove("kl_session"); },
+        update(email, patch) {
+            const users = this.users().map((u) => (u.email === email ? Object.assign({}, u, patch) : u));
+            KL.store.set("kl_users", users);
+        },
+        remove(email) {
+            KL.store.set("kl_users", this.users().filter((u) => u.email !== email));
+            this.logout();
         }
+    };
 
-        const $count = $('#productCount');
-        const $emptyState = $('#productEmptyState');
-        const $filter = $('#productFilter');
-
-        function passesCatalogFilter() {
-            const filterValue = $filter.length ? $filter.val() : 'all';
-            const price = Number($(this).attr('data-price')) || 0;
-            const isNew = $(this).attr('data-new') === 'true';
-            const isSale = $(this).attr('data-sale') === 'true';
-
-            switch (filterValue) {
-                case 'new':
-                    return isNew;
-                case 'sale':
-                    return isSale;
-                case 'under-140':
-                    return price < 140;
-                default:
-                    return true;
-            }
-        }
-
-        function updateProducts() {
-            const query = ($searchInput.val() || '').trim().toLowerCase();
-            const $matches = $cards.filter(function () {
-                const title = $(this).find('.card-title').first().text().trim().toLowerCase();
-                return (!query || title.includes(query)) && passesCatalogFilter.call(this);
+    function initNav() {
+        // Mobile menu
+        const toggle = $("#menuToggle"), links = $("#navLinks");
+        if (toggle && links) {
+            toggle.addEventListener("click", () => {
+                const open = links.classList.toggle("open");
+                toggle.setAttribute("aria-expanded", String(open));
             });
-
-            $cards.prop('hidden', true);
-            $matches.prop('hidden', false);
-
-            if ($count.length) {
-                const resultCount = $matches.length;
-                $count.text(resultCount + ' product' + (resultCount === 1 ? '' : 's') + ' found');
-            }
-
-            if ($emptyState.length) {
-                $emptyState.toggleClass('d-none', $matches.length > 0);
-            }
+            // close the menu after choosing a link
+            $$("a", links).forEach((a) => a.addEventListener("click", () => {
+                links.classList.remove("open"); toggle.setAttribute("aria-expanded", "false");
+            }));
         }
 
-        $searchInput.on('input keyup', updateProducts);
-        $filter.on('change', updateProducts);
-        $(document).on('click', '.product-search-clear', function () {
-            const $input = $(this).closest('.product-search-wrap').find('.product-search');
-            $input.val('').trigger('input').trigger('focus');
+        // Highlight the current page
+        const here = location.pathname.split("/").pop() || "index.html";
+        $$("#navLinks a").forEach((a) => {
+            if (a.getAttribute("href") === here) { a.classList.add("active"); a.setAttribute("aria-current", "page"); }
         });
 
-        updateProducts();
-    }
-
-    // Task 2: Accessible product autocomplete
-    function initAutocomplete() {
-        const $searchInput = $('#productSearch');
-        const $suggestions = $('#productSuggestions');
-        if (!$searchInput.length || !$suggestions.length) {
-            return;
-        }
-
-        $searchInput.attr('role', 'combobox')
-            .attr('aria-autocomplete', 'list')
-            .attr('aria-haspopup', 'listbox');
-
-        const productNames = Array.from(new Set(
-            $('.card-title').map(function () {
-                return $(this).text().trim();
-            }).get().concat(fallbackProductNames)
-        ));
-        const reduceMotion = window.matchMedia &&
-            window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        let activeIndex = -1;
-
-        function closeSuggestions() {
-            $suggestions.empty().hide();
-            $searchInput.attr('aria-expanded', 'false').removeAttr('aria-activedescendant');
-            activeIndex = -1;
-        }
-
-        function updateActiveOption() {
-            const $options = $suggestions.find('[role="option"]');
-            $options.removeClass('active').attr('aria-selected', 'false');
-            if (activeIndex < 0 || activeIndex >= $options.length) {
-                $searchInput.removeAttr('aria-activedescendant');
-                return;
-            }
-
-            const $activeOption = $options.eq(activeIndex);
-            $activeOption.addClass('active').attr('aria-selected', 'true');
-            $searchInput.attr('aria-activedescendant', $activeOption.attr('id'));
-        }
-
-        function showSuggestions(value) {
-            const query = value.trim().toLowerCase();
-            if (!query) {
-                closeSuggestions();
-                return;
-            }
-
-            const matches = productNames.filter(function (name) {
-                return name.toLowerCase().includes(query);
-            }).slice(0, 6);
-
-            $suggestions.empty();
-            if (!matches.length) {
-                closeSuggestions();
-                return;
-            }
-
-            matches.forEach(function (name, index) {
-                const $option = $('<button type="button" class="search-suggestion-item" role="option" aria-selected="false"></button>');
-                const matchIndex = name.toLowerCase().indexOf(query);
-                $option.attr('id', 'product-suggestion-' + index);
-                $option.append(document.createTextNode(name.slice(0, matchIndex)));
-                $option.append($('<strong>').text(name.slice(matchIndex, matchIndex + query.length)));
-                $option.append(document.createTextNode(name.slice(matchIndex + query.length)));
-                $option.on('mousedown', function (event) {
-                    event.preventDefault();
-                    $searchInput.val(name).trigger('input').trigger('focus');
-                    closeSuggestions();
-                });
-                $suggestions.append($option);
-            });
-
-            if (reduceMotion) {
-                $suggestions.show();
+        // Login / profile area
+        const slot = $("#authSlot");
+        if (slot) {
+            const user = KL.auth.current();
+            if (user) {
+                slot.innerHTML = `<a class="user-chip" href="profile.html" title="Open profile">
+                    <span class="avatar">${KL.esc(user.name.charAt(0).toUpperCase())}</span>
+                    <span class="name">${KL.esc(user.name.split(" ")[0])}</span></a>`;
             } else {
-                $suggestions.stop(true, true).slideDown(120);
+                slot.innerHTML = `<a class="btn btn-sm btn-ghost-light" href="login.html">Log in</a>
+                                  <a class="btn btn-sm" href="signup.html">Sign up</a>`;
             }
-            $searchInput.attr('aria-expanded', 'true');
-            activeIndex = -1;
-            updateActiveOption();
         }
-
-        $searchInput.on('input', function () {
-            showSuggestions($searchInput.val() || '');
-        });
-
-        $searchInput.on('keydown', function (event) {
-            const $options = $suggestions.find('[role="option"]');
-            if (!$options.length) {
-                return;
-            }
-
-            if (event.key === 'ArrowDown') {
-                event.preventDefault();
-                activeIndex = activeIndex >= $options.length - 1 ? 0 : activeIndex + 1;
-                updateActiveOption();
-            } else if (event.key === 'ArrowUp') {
-                event.preventDefault();
-                activeIndex = activeIndex <= 0 ? $options.length - 1 : activeIndex - 1;
-                updateActiveOption();
-            } else if (event.key === 'Enter' && activeIndex >= 0) {
-                event.preventDefault();
-                $searchInput.val($options.eq(activeIndex).text()).trigger('input');
-                closeSuggestions();
-            } else if (event.key === 'Escape') {
-                closeSuggestions();
-            }
-        });
-
-        $(document).on('click', function (event) {
-            if (!$(event.target).closest('.product-search-wrap').length) {
-                closeSuggestions();
-            }
-        });
-
-        closeSuggestions();
     }
 
-    // Task 3: FAQ search highlighting in text nodes only
-    function initFaqSearch() {
-        const $searchInput = $('#faqSearch');
-        const $faqItems = $('.faq-item');
-        const $summary = $('#faqMatchSummary');
-        if (!$searchInput.length || !$faqItems.length) {
-            return;
-        }
+    /* ---------- 5. Form validation engine ----------
+       We deliberately do NOT use HTML validation attributes. Every <form> has
+       `novalidate`; rules below produce messages shown under each field.        */
+    KL.rules = {
+        required: (label) => (v) => (v.trim() ? "" : `${label} is required.`),
+        name: (v) => {
+            if (!v.trim()) return "";
+            return /^[\p{L}][\p{L}\s'.-]{1,49}$/u.test(v.trim()) ? "" : "Use 2–50 letters only (no digits or symbols).";
+        },
+        email: (v) => {
+            if (!v.trim()) return "";
+            // local part @ domain . tld (2+ letters), no spaces
+            return /^[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}$/.test(v.trim())
+                ? "" : "Enter a valid email, e.g. name@example.com.";
+        },
+        phone: (v) => {
+            if (!v.trim()) return "";
+            const digits = v.replace(/\D/g, "");
+            const okChars = /^\+?[\d\s\-()]+$/.test(v.trim());
+            return okChars && digits.length >= 10 && digits.length <= 15
+                ? "" : "Enter a phone number with 10–15 digits, e.g. +7 701 123 45 67.";
+        },
+        password: (v) => {
+            if (!v) return "";
+            const problems = [];
+            if (v.length < 8) problems.push("at least 8 characters");
+            if (!/[a-z]/.test(v)) problems.push("a lowercase letter");
+            if (!/[A-Z]/.test(v)) problems.push("an uppercase letter");
+            if (!/\d/.test(v)) problems.push("a digit");
+            if (!/[^A-Za-z0-9]/.test(v)) problems.push("a special character");
+            return problems.length ? "Password needs " + problems.join(", ") + "." : "";
+        },
+        minLength: (label, n) => (v) => (!v.trim() || v.trim().length >= n ? "" : `${label} must be at least ${n} characters.`),
+        match: (otherName, message) => (v, form) => (v === form.elements[otherName].value ? "" : message)
+    };
 
-        function unwrapHighlights() {
-            $('.search-highlight').each(function () {
-                const parent = this.parentNode;
-                parent.replaceChild(document.createTextNode(this.textContent), this);
-                parent.normalize();
-            });
-        }
+    /** Password strength 0–4 for the meter. */
+    KL.passwordStrength = (v) => [/.{8,}/, /[a-z]/, /[A-Z]/, /\d/, /[^A-Za-z0-9]/].filter((r) => r.test(v)).length;
 
-        function highlightTextNodes(element, regex) {
-            let matchCount = 0;
-            const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT);
-            const textNodes = [];
-            let currentNode;
-
-            while ((currentNode = walker.nextNode())) {
-                if (currentNode.nodeValue && regex.test(currentNode.nodeValue)) {
-                    textNodes.push(currentNode);
-                }
-                regex.lastIndex = 0;
-            }
-
-            textNodes.forEach(function (textNode) {
-                const text = textNode.nodeValue;
-                const fragment = document.createDocumentFragment();
-                let lastIndex = 0;
-                let match;
-                regex.lastIndex = 0;
-
-                while ((match = regex.exec(text))) {
-                    fragment.appendChild(document.createTextNode(text.slice(lastIndex, match.index)));
-                    const mark = document.createElement('mark');
-                    mark.className = 'search-highlight';
-                    mark.textContent = match[0];
-                    fragment.appendChild(mark);
-                    lastIndex = match.index + match[0].length;
-                    matchCount += 1;
-                }
-
-                fragment.appendChild(document.createTextNode(text.slice(lastIndex)));
-                textNode.parentNode.replaceChild(fragment, textNode);
-            });
-
-            return matchCount;
-        }
-
-        function restoreAccordion() {
-            $faqItems.show().removeClass('open');
-            $faqItems.find('.faq-question').attr('aria-expanded', 'false');
-            $faqItems.find('.faq-answer').css('maxHeight', '0px');
-        }
-
-        $searchInput.on('input', function () {
-            const query = ($searchInput.val() || '').trim();
-            unwrapHighlights();
-
-            if (!query) {
-                restoreAccordion();
-                $summary.text('');
-                return;
-            }
-
-            const regex = new RegExp(escapeRegExp(query), 'gi');
-            let totalMatches = 0;
-            let matchedQuestions = 0;
-
-            $faqItems.each(function () {
-                const $item = $(this);
-                const question = $item.find('.faq-question').get(0);
-                const $answer = $item.find('.faq-answer');
-                let itemMatches = highlightTextNodes(question, regex);
-                $answer.find('p').each(function () {
-                    itemMatches += highlightTextNodes(this, regex);
-                });
-
-                if (itemMatches) {
-                    matchedQuestions += 1;
-                    totalMatches += itemMatches;
-                    $item.show().addClass('open');
-                    $item.find('.faq-question').attr('aria-expanded', 'true');
-                    $answer.css('maxHeight', $answer.prop('scrollHeight') + 'px');
-                } else {
-                    $item.hide().removeClass('open');
-                    $item.find('.faq-question').attr('aria-expanded', 'false');
-                    $answer.css('maxHeight', '0px');
-                }
-            });
-
-            if (totalMatches) {
-                const questionWord = matchedQuestions === 1 ? 'question' : 'questions';
-                $summary.text(totalMatches + ' match' + (totalMatches === 1 ? '' : 'es') +
-                    ' in ' + matchedQuestions + ' ' + questionWord);
-            } else {
-                $summary.text('No FAQ matches');
-            }
-        });
-
-        restoreAccordion();
+    function fieldError(input) {
+        return input.closest(".field") && $(".field-error", input.closest(".field"));
     }
 
-    // Task 4: Scroll progress indicator
-    function initScrollProgress() {
-        if ($('.scroll-progress-track').length) {
-            return;
+    function showFieldState(input, message) {
+        const err = fieldError(input);
+        input.classList.toggle("invalid", !!message);
+        input.classList.toggle("valid", !message && input.value !== "");
+        input.setAttribute("aria-invalid", message ? "true" : "false");
+        if (err) {
+            err.textContent = message;
+            err.classList.toggle("show", !!message);
+            if (!err.id) err.id = "err-" + (input.id || input.name);
+            input.setAttribute("aria-describedby", err.id);
         }
-
-        const reduceMotion = window.matchMedia &&
-            window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        const $track = $('<div class="scroll-progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="scroll-progress-fill"></div><span class="scroll-progress-bubble">0%</span></div>');
-        $track.prependTo('body');
-
-        function updateProgress() {
-            const scrollableHeight = $(document).height() - $(window).height();
-            const currentScroll = $(window).scrollTop();
-            const progress = scrollableHeight > 0 ? currentScroll / scrollableHeight * 100 : 0;
-            const value = Math.min(100, Math.max(0, progress));
-            $track.find('.scroll-progress-fill').css('width', value + '%');
-            $track.find('.scroll-progress-bubble').text(Math.round(value) + '%');
-            $track.attr('aria-valuenow', Math.round(value));
-        }
-
-        if (reduceMotion) {
-            $track.find('.scroll-progress-fill').css('transition', 'none');
-        }
-        $(window).on('scroll resize', function () {
-            window.requestAnimationFrame(updateProgress);
-        });
-        updateProgress();
     }
 
-    // Task 5: Count-up metrics when they enter the viewport
-    function initStatsCounter() {
-        const $stats = $('.stat-number');
-        if (!$stats.length) {
-            return;
+    function checkField(form, schema, name) {
+        const input = form.elements[name];
+        if (!input) return "";
+        for (const rule of schema[name]) {
+            const msg = rule(input.value, form);
+            if (msg) { showFieldState(input, msg); return msg; }
         }
+        showFieldState(input, "");
+        return "";
+    }
 
-        function formatNumber(value, decimals, suffix) {
-            return Number(value).toLocaleString('en-US', {
-                minimumFractionDigits: decimals,
-                maximumFractionDigits: decimals
-            }) + suffix;
+    /**
+     * Attach validation to a form.
+     * @param form     <form> element (must have novalidate)
+     * @param schema   { fieldName: [ruleFn, ...] } — rules run in order, first message wins
+     * @param onValid  called with the form's values when every field passes
+     */
+    KL.validateForm = function (form, schema, onValid) {
+        if (!form) return;
+        form.setAttribute("novalidate", "");
+        Object.keys(schema).forEach((name) => {
+            const input = form.elements[name];
+            if (!input) return;
+            input.addEventListener("blur", () => { if (input.value !== "") checkField(form, schema, name); });
+            input.addEventListener("input", () => { if (input.classList.contains("invalid")) checkField(form, schema, name); });
+        });
+        form.addEventListener("submit", (e) => {
+            e.preventDefault();
+            let firstBad = null;
+            Object.keys(schema).forEach((name) => {
+                if (checkField(form, schema, name) && !firstBad) firstBad = form.elements[name];
+            });
+            if (firstBad) { firstBad.focus(); return; }
+            const values = {};
+            Object.keys(schema).forEach((name) => { values[name] = form.elements[name].value; });
+            onValid(values, form);
+        });
+    };
+
+    /** Show a success / error banner inside a form (element .form-alert). */
+    KL.formAlert = function (form, message, type) {
+        const box = $(".form-alert", form);
+        if (!box) return;
+        box.textContent = message;
+        box.className = "form-alert show " + (type || "success");
+    };
+
+    /** Reveal / hide password buttons: <button data-pass-toggle="inputId"> */
+    function initPasswordToggles() {
+        $$("[data-pass-toggle]").forEach((btn) => btn.addEventListener("click", () => {
+            const input = document.getElementById(btn.dataset.passToggle);
+            const show = input.type === "password";
+            input.type = show ? "text" : "password";
+            btn.textContent = show ? "Hide" : "Show";
+            btn.setAttribute("aria-pressed", String(show));
+        }));
+    }
+
+    /* ---------- 6. Product card, favourites and cart ---------- */
+    KL.favs = {
+        all() { return KL.store.get("kl_favs", []); },
+        has(id) { return this.all().includes(id); },
+        toggle(id) {
+            const list = this.all();
+            const i = list.indexOf(id);
+            if (i >= 0) list.splice(i, 1); else list.push(id);
+            KL.store.set("kl_favs", list);
+            return i < 0;
         }
+    };
 
-        function animateCounter(element) {
-            const $element = $(element);
-            if ($element.data('animated')) {
+    KL.cart = {
+        items() { return KL.store.get("kl_cart", []); },
+        count() { return this.items().reduce((n, i) => n + i.qty, 0); },
+        save(items) { KL.store.set("kl_cart", items); updateCartUI(); },
+        add(id) {
+            const items = this.items();
+            const row = items.find((i) => i.id === id);
+            if (row) row.qty += 1; else items.push({ id, qty: 1 });
+            this.save(items);
+        },
+        change(id, delta) {
+            let items = this.items();
+            const row = items.find((i) => i.id === id);
+            if (!row) return;
+            row.qty += delta;
+            items = items.filter((i) => i.qty > 0);
+            this.save(items);
+        },
+        clear() { this.save([]); },
+        total() {
+            return this.items().reduce((sum, i) => {
+                const p = window.PRODUCTS.find((x) => x.id === i.id);
+                return sum + (p ? p.price * i.qty : 0);
+            }, 0);
+        }
+    };
+
+    const STAR = (r) => "★".repeat(Math.round(r)) + "☆".repeat(5 - Math.round(r));
+
+    /** Build the HTML of one product card (used by home, shop and weather pages). */
+    KL.productCard = function (p, delay) {
+        const faved = KL.favs.has(p.id);
+        return `<article class="product" style="animation-delay:${(delay || 0) * 50}ms" data-id="${p.id}">
+            <div class="product-img${p.darkBg ? " dark-bg" : ""}">
+                <img src="${p.img}" alt="${KL.esc(p.brand + " " + p.name)} sneakers" loading="lazy" width="400" height="400">
+                <span class="product-tag">${KL.esc(p.type)}</span>
+                <button type="button" class="fav-btn" data-fav="${p.id}" aria-pressed="${faved}"
+                        aria-label="${faved ? "Remove from favourites" : "Add to favourites"}">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                </button>
+            </div>
+            <div class="product-body">
+                <span class="product-brand">${KL.esc(p.brand)}</span>
+                <h3>${KL.esc(p.name)}</h3>
+                <div class="rating" aria-label="Rated ${p.rating} out of 5">${STAR(p.rating)}<small>${p.rating} (${p.reviews})</small></div>
+                <p>${KL.esc(p.desc)}</p>
+                <div class="product-foot">
+                    <span class="price" data-price="${p.price}">${KL.money(p.price)}</span>
+                    <button type="button" class="btn btn-sm" data-add="${p.id}">Add to cart</button>
+                </div>
+            </div>
+        </article>`;
+    };
+
+    /** Global click handling for favourite + add-to-cart buttons (works for dynamic cards). */
+    function initProductActions() {
+        document.addEventListener("click", (e) => {
+            const favBtn = e.target.closest("[data-fav]");
+            if (favBtn) {
+                const id = Number(favBtn.dataset.fav);
+                const now = KL.favs.toggle(id);
+                favBtn.setAttribute("aria-pressed", String(now));
+                favBtn.setAttribute("aria-label", now ? "Remove from favourites" : "Add to favourites");
+                KL.toast(now ? "Added to favourites ♥" : "Removed from favourites");
+                document.dispatchEvent(new CustomEvent("kl:favs-changed"));
                 return;
             }
-            $element.data('animated', true);
-
-            const target = Number($element.data('target')) || 0;
-            const decimals = Number($element.data('decimals')) || 0;
-            const suffix = $element.data('suffix') || '';
-            if (window.matchMedia &&
-                window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-                $element.text(formatNumber(target, decimals, suffix));
-                return;
+            const addBtn = e.target.closest("[data-add]");
+            if (addBtn) {
+                const p = window.PRODUCTS.find((x) => x.id === Number(addBtn.dataset.add));
+                KL.cart.add(p.id);
+                KL.toast(`${p.name} added to cart`);
             }
+        });
+    }
 
-            $({ value: 0 }).animate({ value: target }, {
-                duration: 2000,
-                easing: 'swing',
-                step: function (value) {
-                    $element.text(formatNumber(value, decimals, suffix));
-                },
-                complete: function () {
-                    $element.text(formatNumber(target, decimals, suffix));
-                }
-            });
-        }
+    /* Cart drawer */
+    function updateCartUI() {
+        const count = KL.cart.count();
+        $$("[data-cart-count]").forEach((b) => { b.textContent = count; b.hidden = count === 0; });
+        renderCart();
+    }
 
-        if ('IntersectionObserver' in window) {
-            const observer = new IntersectionObserver(function (entries) {
-                entries.forEach(function (entry) {
-                    if (entry.isIntersecting) {
-                        animateCounter(entry.target);
-                        observer.unobserve(entry.target);
-                    }
-                });
-            }, { threshold: 0.35 });
-            $stats.each(function () {
-                observer.observe(this);
-            });
+    function renderCart() {
+        const list = $("#cartList");
+        if (!list) return;
+        const items = KL.cart.items();
+        if (!items.length) {
+            list.innerHTML = `<li class="empty-state">Your cart is empty.<br>Find a pair you love in the <a href="shop.html">shop</a>.</li>`;
         } else {
-            $stats.each(function () {
-                animateCounter(this);
-            });
+            list.innerHTML = items.map((i) => {
+                const p = window.PRODUCTS.find((x) => x.id === i.id);
+                return `<li class="cart-item">
+                    <img src="${p.img}" alt="">
+                    <div><h4>${KL.esc(p.name)}</h4><small>${KL.esc(p.brand)} · ${KL.money(p.price)}</small>
+                        <div class="qty">
+                            <button type="button" data-qty="-1" data-id="${p.id}" aria-label="Decrease quantity">−</button>
+                            <span aria-live="polite">${i.qty}</span>
+                            <button type="button" data-qty="1" data-id="${p.id}" aria-label="Increase quantity">+</button>
+                        </div></div>
+                    <strong>${KL.money(p.price * i.qty)}</strong>
+                </li>`;
+            }).join("");
         }
+        const total = $("#cartTotal");
+        if (total) total.textContent = KL.money(KL.cart.total());
+        const checkout = $("#checkoutBtn");
+        if (checkout) checkout.disabled = !items.length;
     }
 
-    function showToast(message, type) {
-        const toastTypes = {
-            success: { icon: '✓' },
-            info: { icon: 'ℹ' },
-            warning: { icon: '⚠' },
-            error: { icon: '✕' }
-        };
-        const toastType = toastTypes[type] ? type : 'info';
-        let $container = $('.toast-stack');
-        if (!$container.length) {
-            $container = $('<div class="toast-stack" aria-live="polite" aria-relevant="additions"></div>').appendTo('body');
-        }
-
-        const $toast = $('<div class="site-toast" role="status"></div>').addClass('toast-' + toastType);
-        const $icon = $('<span class="toast-icon" aria-hidden="true"></span>').text(toastTypes[toastType].icon);
-        const $content = $('<span class="toast-message"></span>').text(message);
-        const $close = $('<button type="button" class="toast-close" aria-label="Close notification">&times;</button>');
-        $toast.append($icon, $content, $close).appendTo($container);
-
-        const reduceMotion = window.matchMedia &&
-            window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        function removeToast() {
-            window.clearTimeout($toast.data('dismiss-timeout'));
-            if (reduceMotion) {
-                $toast.remove();
-            } else {
-                $toast.stop(true, true).fadeOut(180, function () {
-                    $(this).remove();
-                });
-            }
-        }
-
-        $close.on('click', removeToast);
-        if (reduceMotion) {
-            $toast.show();
-        } else {
-            $toast.hide().fadeIn(180);
-        }
-        $toast.data('dismiss-timeout', window.setTimeout(removeToast, 3000));
-    }
-
-    // Task 6: Validate once, show submit spinner, then report success
-    function initSubmitSpinners() {
-        const forms = [
-            { selector: '#contactForm', validators: 'contact', success: '#contactSuccess', kind: 'contact' },
-            { selector: '#signupForm', validators: 'signup', success: '#signupSuccess', kind: 'signup' }
-        ];
-
-        forms.forEach(function (formConfig) {
-            const $form = $(formConfig.selector);
-            if (!$form.length) {
+    function initCart() {
+        const dialog = $("#cartDialog");
+        if (!dialog) return;
+        $$("[data-cart-open]").forEach((b) => b.addEventListener("click", () => { renderCart(); dialog.showModal(); }));
+        $("#cartClose").addEventListener("click", () => dialog.close());
+        dialog.addEventListener("click", (e) => { if (e.target === dialog) dialog.close(); }); // click on backdrop
+        $("#cartList").addEventListener("click", (e) => {
+            const b = e.target.closest("[data-qty]");
+            if (b) KL.cart.change(Number(b.dataset.id), Number(b.dataset.qty));
+        });
+        $("#cartClear").addEventListener("click", () => { KL.cart.clear(); KL.toast("Cart cleared"); });
+        $("#checkoutBtn").addEventListener("click", () => {
+            const user = KL.auth.current();
+            if (!user) {
+                KL.toast("Please log in to check out.", "error");
+                setTimeout(() => { location.href = "login.html?next=shop.html"; }, 900);
                 return;
             }
+            const orders = KL.store.get("kl_orders", []);
+            orders.push({ email: user.email, items: KL.cart.items(), totalUSD: KL.cart.total(), date: new Date().toISOString() });
+            KL.store.set("kl_orders", orders);
+            KL.cart.clear();
+            dialog.close();
+            KL.toast("Order placed! Thank you 🎉 (demo checkout)");
+        });
+        updateCartUI();
+    }
 
-            $form.on('submit', function (event) {
-                event.preventDefault();
-                if ($form.data('submitting')) {
-                    return;
-                }
+    /* ---------- 7. Currency — live rates from a public REST API ---------- */
+    const CURRENCIES = { USD: { symbol: "$", locale: "en-US" }, KZT: { symbol: "₸", locale: "ru-KZ" }, EUR: { symbol: "€", locale: "de-DE" } };
+    const FALLBACK_RATES = { USD: 1, KZT: 480, EUR: 0.92 };   // used when the API is unreachable
 
-                $(formConfig.success).addClass('d-none');
-                const validatorSet = window.KicksLabValidation &&
-                    window.KicksLabValidation[formConfig.validators];
-                if (!validatorSet) {
-                    showToast('Form validation is unavailable. Please reload and try again.', 'error');
-                    return;
-                }
+    KL.currency = {
+        list: Object.keys(CURRENCIES),
+        get() { return KL.store.get("kl_currency", "USD"); },
+        set(code) { KL.store.set("kl_currency", code); document.dispatchEvent(new CustomEvent("kl:currency-changed")); },
+        rates() { const c = KL.store.get("kl_rates", null); return c && c.rates ? c.rates : FALLBACK_RATES; },
+        updatedAt() { const c = KL.store.get("kl_rates", null); return c ? c.time : null; }
+    };
 
-                const validationResults = Object.keys(validatorSet).map(function (key) {
-                    return validatorSet[key]();
-                });
-                if (!validationResults.every(Boolean)) {
-                    return;
-                }
+    KL.money = function (usd) {
+        const code = KL.currency.get();
+        const value = usd * (KL.currency.rates()[code] || 1);
+        const cfg = CURRENCIES[code] || CURRENCIES.USD;
+        return cfg.symbol + Math.round(value).toLocaleString(cfg.locale);
+    };
 
-                const $button = $form.find('[type="submit"]').first();
-                const $success = $(formConfig.success);
-                const submittedName = $form.find('[name="name"]').val().trim();
-                const successMessage = formConfig.kind === 'contact'
-                    ? 'Thanks, ' + submittedName + '! Your message passed validation. This project demo does not connect to a mail server.'
-                    : 'Thanks, ' + submittedName + '! This signup demo does not create an account yet.';
-
-                if (!$button.data('original-text')) {
-                    $button.data('original-text', $button.text());
-                }
-
-                $form.data('submitting', true);
-                $button.prop('disabled', true)
-                    .html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Please wait…');
-
-                window.setTimeout(function () {
-                    $button.text($button.data('original-text')).prop('disabled', false);
-                    $form.data('submitting', false);
-                    if (window.KicksLabValidation) {
-                        window.KicksLabValidation.clearState($form.get(0));
-                    }
-                    $form.get(0).reset();
-                    window.KicksLabValidation.showAlert($success.get(0), successMessage);
-                    showToast(successMessage, 'success');
-
-                    if (formConfig.kind === 'signup') {
-                        window.setTimeout(function () {
-                            $('#signupPopup').removeClass('show');
-                            $('body').removeClass('popup-open');
-                        }, 2000);
-                    }
-                }, 1750);
+    /** Fetch exchange rates (cached for 12 h). Resolves with { live: boolean }. */
+    KL.loadRates = async function () {
+        const cached = KL.store.get("kl_rates", null);
+        if (cached && Date.now() - cached.ts < 12 * 3600 * 1000) return { live: true, cached: true };
+        try {
+            const ctrl = new AbortController();
+            const timer = setTimeout(() => ctrl.abort(), 8000);
+            const res = await fetch("https://open.er-api.com/v6/latest/USD", { signal: ctrl.signal });
+            clearTimeout(timer);
+            if (!res.ok) throw new Error("HTTP " + res.status);
+            const data = await res.json();
+            if (data.result !== "success") throw new Error("API error");
+            KL.store.set("kl_rates", {
+                ts: Date.now(), time: data.time_last_update_utc,
+                rates: { USD: 1, KZT: data.rates.KZT, EUR: data.rates.EUR }
             });
-        });
-    }
-
-    // Task 7: Shared, dismissible toast notifications
-    function initToastActions() {
-        $(document).on('click', '[data-cart-action]', function () {
-            const $card = $(this).closest('.card');
-            const productName = $card.find('.card-title').first().text().trim();
-            showToast(productName + ' added to your demo cart.', 'success');
-        });
-
-        $(document).on('click', '.rating-star', function () {
-            showToast('Thank you for rating KicksLab ' + $(this).data('rating') + ' out of 5 stars!', 'info');
-        });
-    }
-
-    function fallbackCopy(text) {
-        const $textarea = $('<textarea class="copy-fallback" aria-hidden="true"></textarea>')
-            .val(text).appendTo('body');
-        $textarea.trigger('focus').trigger('select');
-        const copied = document.execCommand('copy');
-        $textarea.remove();
-        if (!copied) {
-            throw new Error('The browser could not copy the selected text.');
+            return { live: true };
+        } catch (err) {
+            return { live: false, error: err.message };
         }
+    };
+
+    function refreshPrices() {
+        $$("[data-price]").forEach((el) => { el.textContent = KL.money(Number(el.dataset.price)); });
+        renderCart();
     }
 
-    // Task 8: Promo snippets with copy feedback
-    function initCopyButtons() {
-        $('.copy-snippet').on('copy', function () {
-            showToast('Promo details copied to clipboard.', 'info');
-        });
-
-        $('.copy-button').on('click', function () {
-            const $button = $(this);
-            const $item = $button.closest('.copy-item');
-            const $snippet = $item.find('.copy-snippet');
-            const value = $snippet.attr('data-copy-value') || $snippet.text().trim();
-            const $icon = $button.find('.copy-icon');
-            const $tooltip = $item.find('.copy-tooltip');
-
-            function showCopiedFeedback() {
-                const previousTimeout = $button.data('copy-timeout');
-                if (previousTimeout) {
-                    window.clearTimeout(previousTimeout);
-                }
-                $icon.text('✓');
-                $tooltip.text('Copied to clipboard!').addClass('show');
-                $button.data('copy-timeout', window.setTimeout(function () {
-                    $icon.text('⧉');
-                    $tooltip.removeClass('show');
-                }, 2000));
-                showToast('Copied to clipboard!', 'success');
-            }
-
-            const clipboardWrite = navigator.clipboard && navigator.clipboard.writeText
-                ? Promise.resolve().then(function () {
-                    return navigator.clipboard.writeText(value);
-                }).catch(function () {
-                    fallbackCopy(value);
-                })
-                : Promise.resolve().then(function () {
-                    fallbackCopy(value);
-                });
-
-            clipboardWrite.then(showCopiedFeedback).catch(function () {
-                showToast('Could not copy this text. Please select and copy it manually.', 'error');
-            });
+    /* ---------- 8. Newsletter form in the footer ---------- */
+    function initNewsletter() {
+        const form = $("#newsletterForm");
+        if (!form) return;
+        KL.validateForm(form, {
+            email: [KL.rules.required("Email"), KL.rules.email]
+        }, (values) => {
+            const list = KL.store.get("kl_subscribers", []);
+            const email = values.email.trim().toLowerCase();
+            if (list.includes(email)) { KL.formAlert(form, "You are already subscribed.", "success"); return; }
+            list.push(email);
+            KL.store.set("kl_subscribers", list);
+            form.reset();
+            $$(".input", form).forEach((i) => i.classList.remove("valid"));
+            KL.formAlert(form, "Thanks! You're on the list.", "success");
         });
     }
 
-    // Task 9: Load images shortly before they enter the viewport
-    function initLazyLoading() {
-        const placeholder = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 9%22%3E%3Crect width=%2216%22 height=%229%22 fill=%22%23f4f5f8%22/%3E%3C/svg%3E';
-        const $images = $('img.lazy');
-        if (!$images.length) {
-            return;
-        }
-
-        function unbindIfComplete() {
-            if (!$('img.lazy').length) {
-                $(window).off('scroll resize', loadVisibleImages);
-                $(window).off('load', loadVisibleImages);
-            }
-        }
-
-        function loadVisibleImages() {
-            const viewportBottom = $(window).scrollTop() + $(window).height() + 200;
-            $('img.lazy').each(function () {
-                const $image = $(this);
-                const source = $image.attr('data-src');
-                if (!source || $image.offset().top >= viewportBottom) {
-                    return;
-                }
-
-                $image.one('load', function () {
-                    $image.removeClass('lazy').addClass('lazy-loaded');
-                    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-                        $image.css('opacity', 1);
-                    } else {
-                        $image.stop(true, true).fadeTo(180, 1);
-                    }
-                }).one('error', function () {
-                    $image.removeClass('lazy').addClass('lazy-error')
-                        .attr('src', placeholder)
-                        .attr('title', 'Image could not be loaded');
-                    unbindIfComplete();
-                });
-                $image.attr('src', source).removeAttr('data-src');
-            });
-            unbindIfComplete();
-        }
-
-        $('img.lazy').css('opacity', 0);
-        $(window).on('scroll resize', loadVisibleImages);
-        $(window).on('load', loadVisibleImages);
-        loadVisibleImages();
+    /* ---------- 9. Scroll reveal, footer clock, init ---------- */
+    function initReveal() {
+        const items = $$(".reveal");
+        if (!("IntersectionObserver" in window)) { items.forEach((i) => i.classList.add("in")); return; }
+        const io = new IntersectionObserver((entries) => {
+            entries.forEach((en) => { if (en.isIntersecting) { en.target.classList.add("in"); io.unobserve(en.target); } });
+        }, { threshold: 0.12 });
+        items.forEach((i) => io.observe(i));
     }
 
-    initLiveSearch();
-    initAutocomplete();
-    initFaqSearch();
-    initScrollProgress();
-    initStatsCounter();
-    initSubmitSpinners();
-    initToastActions();
-    initCopyButtons();
-    initLazyLoading();
-});
+    function initFooter() {
+        const y = $("#year");
+        if (y) y.textContent = new Date().getFullYear();
+    }
+
+    KL.refreshProducts = refreshPrices;
+
+    document.addEventListener("DOMContentLoaded", () => {
+        initTheme();
+        initNav();
+        initPasswordToggles();
+        initProductActions();
+        initCart();
+        initNewsletter();
+        initFooter();
+        initReveal();
+        document.addEventListener("kl:currency-changed", refreshPrices);
+        KL.loadRates().then(refreshPrices);
+    });
+})();

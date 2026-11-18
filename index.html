@@ -1,293 +1,174 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KicksLab - Home</title>
-    <script src="https://code.jquery.com/jquery-4.0.0.min.js"></script>
-    <script src="js/script.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>KicksLab — Sneakers for men, women and kids</title>
+    <meta name="description" content="KicksLab is an online sneaker store with weather-based recommendations.">
+    <meta name="color-scheme" content="light dark">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%23d1430c'/%3E%3Cpath d='M4 16v-2.500c0-.7.4-1.300 1-1.600L9 9.500l1.300 1.500c.3.400.8.600 1.300.6H14c1.300 0 1.900.3 3 1l2.500 1.500c.8.400 1.300 1.200 1.300 2V16a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z' fill='white'/%3E%3C/svg%3E">
+    <script>
+        /* apply the saved theme before first paint to avoid a white flash */
+        (function () {
+            document.documentElement.classList.add("js");
+            var t = null;
+            try { t = JSON.parse(localStorage.getItem("kl_theme")); } catch (e) {}
+            if (!t && window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches) t = "dark";
+            document.documentElement.setAttribute("data-theme", t === "dark" ? "dark" : "light");
+        })();
+    </script>
     <link rel="stylesheet" href="css/style.css">
 </head>
-<body class="bg-light d-flex flex-column min-vh-100">
-
-    <nav class="navbar navbar-expand-lg navbar-dark shadow-sm">
-        <div class="container-fluid px-4">
-            <a class="navbar-brand fw-bold" href="index.html">KicksLab</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link active" href="index.html">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="men.html">Men</a></li>
-                    <li class="nav-item"><a class="nav-link" href="women.html">Women</a></li>
-                    <li class="nav-item"><a class="nav-link" href="kids.html">Kids</a></li>
-                    <li class="nav-item"><a class="nav-link" href="team.html">Team</a></li>
-                    <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
-                </ul>
-            <div class="d-flex gap-2 ms-lg-3 mt-2 mt-lg-0">
-                <button type="button" class="btn btn-warning btn-sm open-popup">Subscribe</button>
-                <button type="button" class="btn btn-outline-light btn-sm bg-color-btn">🎨 Change Color</button>
-                <button type="button" class="btn btn-outline-light btn-sm theme-toggle" aria-pressed="false">🌙 Night mode</button>
-            </div>
-
-            </div>
+<body data-page="home">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header">
+    <div class="container nav">
+        <a class="brand" href="index.html" aria-label="KicksLab home"><svg class="brand-mark" width="30" height="30" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M2 17v-3c0-.8.4-1.500 1.100-1.900L8 9.500l1.500 1.800c.4.500 1 .7 1.600.7H14c1.500 0 2.200.4 3.500 1.200l3 1.800c.9.500 1.500 1.400 1.500 2.400V17a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1z"/></svg><span>KicksLab</span></a>
+        <ul class="nav-links" id="navLinks">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="shop.html">Shop</a></li>
+                <li><a href="weather.html">Sneaker Weather</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html">Contact</a></li>
+        </ul>
+        <div class="nav-actions">
+            <div id="authSlot" class="nav-actions"><a class="btn btn-sm btn-ghost-light" href="login.html">Log in</a></div>
+            <button type="button" class="icon-btn" data-cart-open aria-label="Open cart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.600h9.700a2 2 0 0 0 2-1.600L23 6H6"/></svg><span class="badge" data-cart-count hidden>0</span></button>
+            <button type="button" class="theme-switch" data-theme-toggle role="switch" aria-pressed="false" aria-label="Switch to dark mode" title="Light / dark mode"><span class="knob"><svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></span></button>
         </div>
-    </nav>
-
-    
-    <main class="container-fluid px-4 my-4 flex-grow-1">
-        <div class="row g-4">
-            
-         
-            <aside class="col-12 col-lg-3">
-                <div class="sidebar-card p-3 rounded shadow-sm bg-white mb-4">
-                    <h5 class="fw-bold mb-3 sidebar-title">Categories</h5>
-                    <ul class="nav flex-column nav-pills sidebar-nav">
-                        <li class="nav-item"><a class="nav-link active" href="index.html">All Products <span class="badge bg-light text-dark float-end">6</span></a></li>
-                        <li class="nav-item"><a class="nav-link" href="men.html">Men's Sneakers <span class="badge bg-light text-dark float-end">4</span></a></li>
-                        <li class="nav-item"><a class="nav-link" href="women.html">Women's Sneakers <span class="badge bg-light text-dark float-end">4</span></a></li>
-                        <li class="nav-item"><a class="nav-link" href="kids.html">Kids' Shoes <span class="badge bg-light text-dark float-end">4</span></a></li>
-                    </ul>
-
-                    <h5 class="fw-bold my-3 sidebar-title">Popular Brands</h5>
-                    <ul class="nav flex-column sidebar-nav">
-                        <li class="nav-item"><a class="nav-link py-1" href="#">Nike</a></li>
-                        <li class="nav-item"><a class="nav-link py-1" href="#">Adidas</a></li>
-                        <li class="nav-item"><a class="nav-link py-1" href="#">Jordan</a></li>
-                        <li class="nav-item"><a class="nav-link py-1" href="#">New Balance</a></li>
-                        <li class="nav-item"><a class="nav-link py-1" href="#">Puma</a></li>
-                    </ul>
-
-                    <div class="product-search-wrap mt-4">
-                        <label class="form-label fw-semibold" for="productSearch">Search catalog</label>
-                        <div class="input-group">
-                            <input id="productSearch" class="form-control product-search" type="search" placeholder="Search sneakers..." aria-label="Search products" aria-controls="productSuggestions" aria-expanded="false" role="combobox" autocomplete="off">
-                            <button type="button" class="btn btn-outline-secondary product-search-clear" aria-label="Clear search">Clear</button>
-                        </div>
-                        <div id="productSuggestions" class="search-suggestions" role="listbox" aria-label="Product suggestions"></div>
-                        <div id="productCount" class="small text-muted mt-2" aria-live="polite"></div>
-                    </div>
-
-                    <p class="small text-muted mb-0">Use the catalog filter to browse new arrivals, sale picks, and budget-friendly pairs.</p>
-                </div>
-            </aside>
-
-            <section class="col-12 col-lg-9">
-              
-                <div class="bg-white p-4 p-md-5 rounded shadow-sm mb-4 border-top border-4 border-warning">
-                    <h1 class="display-5 fw-bold">New Sneaker Drop 2026</h1>
-                    <p class="lead text-muted">Explore the latest collection of premium streetwear and athletic shoes.</p>
-                    <a href="men.html" class="btn btn-primary btn-lg me-2">Shop Now</a>
-                    <a href="contact.html" class="btn btn-outline-primary btn-lg">Contact Us</a>
-                </div>
-
-               
-                <h3 class="mb-3 fw-bold">Featured Sneakers</h3>
-                <div class="mb-3 d-flex flex-wrap align-items-center gap-2">
-                    <label class="fw-semibold" for="productFilter">Filter products:</label>
-                    <select class="form-select w-auto" id="productFilter">
-                        <option value="all">All products</option>
-                        <option value="new">New arrivals</option>
-                        <option value="sale">On sale</option>
-                        <option value="under-140">Under $140</option>
-                    </select>
-                </div>
-                <div class="row g-4 product-grid" id="featuredProducts">
-                    <div class="col-12 col-md-6 col-xl-4" data-product-card data-new="false" data-sale="true" data-price="149.99">
-                        <div class="card h-100 shadow-sm">
-                            <span class="badge-overlay">SALE</span>
-                            <img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 9%22%3E%3Crect width=%2216%22 height=%229%22 fill=%22%23f4f5f8%22/%3E%3C/svg%3E" data-src="images/shoe_men1.jpg" class="card-img-top lazy" alt="Air Nitro 2026 running sneaker">
-                            <div class="card-body d-flex flex-column">
-                                <h5 class="card-title">Air Nitro 2026</h5>
-                                <p class="card-text text-muted">$149.99</p>
-                                <button type="button" class="btn btn-dark mt-auto" data-cart-action>Add to Cart</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-6 col-xl-4" data-product-card data-new="true" data-sale="false" data-price="129.99">
-                        <div class="card h-100 shadow-sm">
-                            <span class="badge-overlay">NEW</span>
-                            <img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 9%22%3E%3Crect width=%2216%22 height=%229%22 fill=%22%23f4f5f8%22/%3E%3C/svg%3E" data-src="images/trainerspro.jpg" class="card-img-top lazy" alt="Urban Glide X performance sneaker">
-                            <div class="card-body d-flex flex-column">
-                                <h5 class="card-title">Urban Glide X</h5>
-                                <p class="card-text text-muted">$129.99</p>
-                                <button type="button" class="btn btn-dark mt-auto" data-cart-action>Add to Cart</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-6 col-xl-4" data-product-card data-new="false" data-sale="false" data-price="159.99">
-                        <div class="card h-100 shadow-sm">
-                            <img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 9%22%3E%3Crect width=%2216%22 height=%229%22 fill=%22%23f4f5f8%22/%3E%3C/svg%3E" data-src="images/shoe_men2.jpg" class="card-img-top lazy" alt="Retro Street High sneakers">
-                            <div class="card-body d-flex flex-column">
-                                <h5 class="card-title">Retro Street High</h5>
-                                <p class="card-text text-muted">$159.99</p>
-                                <button type="button" class="btn btn-dark mt-auto" data-cart-action>Add to Cart</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-6 col-xl-4" data-product-card data-new="true" data-sale="true" data-price="139.99">
-                        <div class="card h-100 shadow-sm">
-                            <span class="badge-overlay">NEW</span>
-                            <img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 9%22%3E%3Crect width=%2216%22 height=%229%22 fill=%22%23f4f5f8%22/%3E%3C/svg%3E" data-src="images/shoe_women1.jpg" class="card-img-top lazy" alt="Street Flex Women sneaker">
-                            <div class="card-body d-flex flex-column">
-                                <h5 class="card-title">Street Flex Women</h5>
-                                <p class="card-text text-muted">$139.99</p>
-                                <button type="button" class="btn btn-dark mt-auto" data-cart-action>Add to Cart</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-6 col-xl-4" data-product-card data-new="false" data-sale="false" data-price="119.99">
-                        <div class="card h-100 shadow-sm">
-                            <img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 9%22%3E%3Crect width=%2216%22 height=%229%22 fill=%22%23f4f5f8%22/%3E%3C/svg%3E" data-src="images/shoe_women2.jpg" class="card-img-top lazy" alt="Nova Trail Runner sneakers">
-                            <div class="card-body d-flex flex-column">
-                                <h5 class="card-title">Nova Trail Runner</h5>
-                                <p class="card-text text-muted">$119.99</p>
-                                <button type="button" class="btn btn-dark mt-auto" data-cart-action>Add to Cart</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-6 col-xl-4" data-product-card data-new="false" data-sale="true" data-price="99.99">
-                        <div class="card h-100 shadow-sm">
-                            <span class="badge-overlay">SALE</span>
-                            <img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 9%22%3E%3Crect width=%2216%22 height=%229%22 fill=%22%23f4f5f8%22/%3E%3C/svg%3E" data-src="images/shoe_kids1.jpg" class="card-img-top lazy" alt="Junior Sprint Kids sneaker">
-                            <div class="card-body d-flex flex-column">
-                                <h5 class="card-title">Junior Sprint</h5>
-                                <p class="card-text text-muted">$99.99</p>
-                                <button type="button" class="btn btn-dark mt-auto" data-cart-action>Add to Cart</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div id="productEmptyState" class="alert alert-light border-0 px-0 py-2 mb-0 d-none" role="status">No products found</div>
-                <section class="stats-section mt-5" aria-labelledby="statsTitle">
-                    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
-                        <h3 class="mb-0 fw-bold" id="statsTitle">KicksLab in numbers</h3>
-                    </div>
-                    <div class="row g-3">
-                        <div class="col-6 col-md-3">
-                            <div class="stat-card">
-                                <div class="stat-number" data-target="15000" data-suffix="+">0</div>
-                                <div class="stat-label">Happy Customers</div>
-                            </div>
-                        </div>
-                        <div class="col-6 col-md-3">
-                            <div class="stat-card">
-                                <div class="stat-number" data-target="250" data-suffix="+">0</div>
-                                <div class="stat-label">Sneaker Models</div>
-                            </div>
-                        </div>
-                        <div class="col-6 col-md-3">
-                            <div class="stat-card">
-                                <div class="stat-number" data-target="40" data-suffix="+">0</div>
-                                <div class="stat-label">Brands</div>
-                            </div>
-                        </div>
-                        <div class="col-6 col-md-3">
-                            <div class="stat-card">
-                                <div class="stat-number" data-target="4.9" data-suffix="" data-decimals="1">0</div>
-                                <div class="stat-label">Average Rating</div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-                <section class="rating-panel mt-5 p-4 rounded shadow-sm bg-white" aria-labelledby="ratingTitle">
-                    <h3 class="h5 fw-bold" id="ratingTitle">Enjoying KicksLab?</h3>
-                    <p class="mb-2">Rate your shopping experience:</p>
-                    <div class="rating-stars" role="group" aria-label="Rate your experience from 1 to 5 stars">
-                        <button type="button" class="rating-star" data-rating="1" aria-label="1 star" aria-pressed="false">★</button>
-                        <button type="button" class="rating-star" data-rating="2" aria-label="2 stars" aria-pressed="false">★</button>
-                        <button type="button" class="rating-star" data-rating="3" aria-label="3 stars" aria-pressed="false">★</button>
-                        <button type="button" class="rating-star" data-rating="4" aria-label="4 stars" aria-pressed="false">★</button>
-                        <button type="button" class="rating-star" data-rating="5" aria-label="5 stars" aria-pressed="false">★</button>
-                    </div>
-                    <p id="ratingMessage" class="mb-0 mt-2 text-muted" aria-live="polite">Choose a rating to share your feedback.</p>
-                </section>
-                <section class="promo-section mt-5 p-4 rounded shadow-sm bg-white" aria-labelledby="promoTitle">
-                    <h3 class="h5 fw-bold mb-3" id="promoTitle">Promo codes &amp; useful details</h3>
-                    <div class="copy-list">
-                        <div class="copy-item">
-                            <code class="copy-snippet" data-copy-value="KICKS2026">KICKS2026</code>
-                            <span class="copy-tooltip" role="status" aria-live="polite"></span>
-                            <button type="button" class="btn btn-outline-primary btn-sm copy-button" data-copy-target="promo-code" aria-label="Copy promo code KICKS2026">
-                                <span class="copy-icon" aria-hidden="true">⧉</span>
-                            </button>
-                        </div>
-                        <div class="copy-item">
-                            <code class="copy-snippet" data-copy-value="hello@kickslab.example">hello@kickslab.example</code>
-                            <span class="copy-tooltip" role="status" aria-live="polite"></span>
-                            <button type="button" class="btn btn-outline-primary btn-sm copy-button" data-copy-target="store-email" aria-label="Copy store email address">
-                                <span class="copy-icon" aria-hidden="true">⧉</span>
-                            </button>
-                        </div>
-                        <div class="copy-item">
-                            <code class="copy-snippet" data-copy-value="KL-2026-000000">KL-2026-000000</code>
-                            <span class="copy-tooltip" role="status" aria-live="polite"></span>
-                            <button type="button" class="btn btn-outline-primary btn-sm copy-button" data-copy-target="tracking-format" aria-label="Copy tracking number format">
-                                <span class="copy-icon" aria-hidden="true">⧉</span>
-                            </button>
-                        </div>
-                    </div>
-                    <p class="small text-muted mb-0 mt-3">Select any snippet and use Ctrl+C, or use its Copy button.</p>
-                </section>
-                <section class="lookbook-section mt-5" aria-labelledby="lookbookTitle">
-                    <h3 class="mb-3 fw-bold" id="lookbookTitle">KicksLab Lookbook</h3>
-                    <div class="row g-3">
-                        <div class="col-12 col-md-4">
-                            <figure class="lookbook-card mb-0">
-                                <img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 9%22%3E%3Crect width=%2216%22 height=%229%22 fill=%22%23f4f5f8%22/%3E%3C/svg%3E" data-src="images/shoe_men2.jpg" class="lookbook-image lazy" alt="Retro Street High lookbook sneaker">
-                                <figcaption>Retro Street</figcaption>
-                            </figure>
-                        </div>
-                        <div class="col-12 col-md-4">
-                            <figure class="lookbook-card mb-0">
-                                <img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 9%22%3E%3Crect width=%2216%22 height=%229%22 fill=%22%23f4f5f8%22/%3E%3C/svg%3E" data-src="images/shoe_women1.jpg" class="lookbook-image lazy" alt="Women's sneaker from the KicksLab lookbook">
-                                <figcaption>Everyday Motion</figcaption>
-                            </figure>
-                        </div>
-                        <div class="col-12 col-md-4">
-                            <figure class="lookbook-card mb-0">
-                                <img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 9%22%3E%3Crect width=%2216%22 height=%229%22 fill=%22%23f4f5f8%22/%3E%3C/svg%3E" data-src="images/shoe_kids1.jpg" class="lookbook-image lazy" alt="Kids sneaker from the KicksLab lookbook">
-                                <figcaption>Junior Sprint</figcaption>
-                            </figure>
-                        </div>
-                    </div>
-                </section>
-            </section>
-
-        </div>
-    </main>
-
-    <footer class="bg-dark text-white text-center py-3 mt-auto">
-        <div class="container-fluid">
-            <p class="mb-0">© 2026 KicksLab. Team Members: Yersultan Sansyzbay, Almas Bekenov, Dinmukhamed Bolat.</p>
-            <p class="mb-0 mt-1 small">🕒 <span id="datetime"></span></p>
-        </div>
-    </footer>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
-<div class="popup-overlay" id="signupPopup" role="dialog" aria-modal="true" aria-labelledby="popupTitle">
-    <div class="popup-box">
-        <button type="button" class="popup-close" aria-label="Close">&times;</button>
-        <h4 class="mb-3" id="popupTitle">Subscribe to KicksLab</h4>
-        <div class="alert alert-success d-none" id="signupSuccess"></div>
-        <form id="signupForm" novalidate>
-            <div class="mb-3"><label class="form-label" for="su-name">Name</label>
-                <input type="text" class="form-control" id="su-name" name="name" placeholder="Your name"></div>
-            <div class="mb-3"><label class="form-label" for="su-email">Email</label>
-                <input type="email" class="form-control" id="su-email" name="email" placeholder="name@example.com"></div>
-            <div class="mb-3"><label class="form-label" for="su-pass">Password</label>
-                <input type="password" class="form-control" id="su-pass" name="password" placeholder="Min. 8 characters"></div>
-            <div class="mb-3"><label class="form-label" for="su-confirm">Confirm password</label>
-                <input type="password" class="form-control" id="su-confirm" name="confirm" placeholder="Repeat password"></div>
-            <button type="submit" class="btn btn-dark w-100">Subscribe</button>
-        </form>
+        <button type="button" class="icon-btn menu-toggle" id="menuToggle" aria-expanded="false" aria-controls="navLinks" aria-label="Toggle menu">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+        </button>
     </div>
-</div>
+</header>
+<main id="main">
+    <section class="hero">
+        <div class="container hero-inner">
+            <div>
+                <span class="eyebrow" style="color:#ff8a52">New season · 2026</span>
+                <h1>Find sneakers that fit <span>your day</span>.</h1>
+                <p>KicksLab is an online sneaker store for men, women and kids. Browse the collection, save your favourites and even check the weather to pick the right pair.</p>
+                <div class="hero-actions">
+                    <a class="btn" href="shop.html">Shop the collection</a>
+                    <a class="btn btn-ghost-light" href="weather.html">Try Sneaker Weather</a>
+                </div>
+                <div class="hero-stats">
+                    <div><strong>9</strong><span>models in stock</span></div>
+                    <div><strong>3</strong><span>categories</span></div>
+                    <div><strong>4.6★</strong><span>average rating</span></div>
+                </div>
+            </div>
+            <div class="hero-art"><img src="images/air-pulse.jpg" alt="Nike Air Pulse running sneaker" width="440" height="440"></div>
+        </div>
+    </section>
 
-<script src="js/main.js?v=assignment5"></script>
+    <section class="section">
+        <div class="container">
+            <div class="section-head reveal"><span class="eyebrow">Shop by category</span>
+                <h2>Something for every pair of feet</h2>
+                <p>Whether you run, commute or chase after kids, start with a category and filter from there.</p></div>
+            <div class="grid grid-3">
+                <a class="card cat-card card-hover reveal" href="shop.html?cat=men"><div class="cat-img"><img src="images/trainers-pro.jpg" alt="Men's training sneakers" loading="lazy"></div>
+                    <div class="cat-body"><h3>Men</h3><p>Runners, trainers and clean court classics.</p></div></a>
+                <a class="card cat-card card-hover reveal" href="shop.html?cat=women"><div class="cat-img"><img src="images/coral-trail.jpg" alt="Women's trail sneakers" loading="lazy"></div>
+                    <div class="cat-body"><h3>Women</h3><p>Trail grip, retro colour and everyday comfort.</p></div></a>
+                <a class="card cat-card card-hover reveal" href="shop.html?cat=kids"><div class="cat-img"><img src="images/kids-blue.jpg" alt="Kids' blue sneakers" loading="lazy"></div>
+                    <div class="cat-body"><h3>Kids</h3><p>Easy-on, durable shoes for school and play.</p></div></a>
+            </div>
+        </div>
+    </section>
 
+    <section class="section" style="padding-top:0">
+        <div class="container">
+            <div class="section-head reveal"><span class="eyebrow">Top rated</span><h2>Customer favourites</h2>
+                <p>The four best-reviewed pairs right now. Tap the heart to save one, or add it straight to your cart.</p></div>
+            <div class="grid grid-4" id="featuredGrid"></div>
+            <p style="margin-top:1.5rem;text-align:center"><a class="btn btn-outline" href="shop.html">See all sneakers</a></p>
+        </div>
+    </section>
+
+    <section class="section" style="padding-top:0">
+        <div class="container">
+            <div class="section-head reveal"><span class="eyebrow">Why KicksLab</span><h2>Built around real shoppers</h2></div>
+            <div class="grid grid-3" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr))">
+                <div class="card feature reveal"><div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 10h-1.300A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg></div><h3>Weather-smart picks</h3><p>Our Sneaker Weather tool reads live forecasts and suggests the right pair for today.</p></div>
+                <div class="card feature reveal"><div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 3h15v13H1zM16 8h4l3 3v5h-7z"/><circle cx="5.500" cy="18.500" r="2.500"/><circle cx="18.500" cy="18.500" r="2.500"/></svg></div><h3>Fast delivery</h3><p>Orders leave the warehouse within 24 hours.</p></div>
+                <div class="card feature reveal"><div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.500 9a9 9 0 0 1 14.800-3.400L23 10M1 14l4.700 4.400A9 9 0 0 0 20.500 15"/></svg></div><h3>Easy returns</h3><p>Not the right fit? Send them back within 30 days.</p></div>
+                <div class="card feature reveal"><div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><h3>Original products</h3><p>Every pair is checked before it ships.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" style="padding-top:0">
+        <div class="container">
+            <div class="cta-band reveal">
+                <div><h2 style="margin-bottom:.4rem">Not sure what to wear today?</h2>
+                    <p>Enter your city and we'll check the weather and recommend sneakers from our catalogue.</p></div>
+                <a class="btn btn-light" href="weather.html">Check the weather</a>
+            </div>
+        </div>
+    </section>
+</main>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // featured block: the 4 best-rated products
+        var top = window.PRODUCTS.slice().sort(function (a, b) { return b.rating - a.rating; }).slice(0, 4);
+        document.getElementById("featuredGrid").innerHTML = top.map(function (p, i) { return KL.productCard(p, i); }).join("");
+    });
+</script>
+<footer class="site-footer">
+    <div class="container footer-grid">
+        <div>
+            <h4>KicksLab</h4>
+            <p>Sneakers for the whole family, matched to your day. A student project by group SE-2506.</p>
+        </div>
+        <div>
+            <h4>Explore</h4>
+            <ul>
+                <li><a href="shop.html?cat=men">Men</a></li>
+                <li><a href="shop.html?cat=women">Women</a></li>
+                <li><a href="shop.html?cat=kids">Kids</a></li>
+                <li><a href="weather.html">Sneaker Weather</a></li>
+            </ul>
+        </div>
+        <div>
+            <h4>Company</h4>
+            <ul>
+                <li><a href="about.html">About &amp; team</a></li>
+                <li><a href="contact.html">Contact</a></li>
+                <li><a href="login.html">Log in</a></li>
+                <li><a href="signup.html">Sign up</a></li>
+            </ul>
+        </div>
+        <div class="footer-news">
+            <h4>Drop alerts</h4>
+            <form id="newsletterForm" novalidate>
+                <div class="field" style="margin-bottom:.6rem">
+                    <label class="sr-only" for="newsEmail">Email</label>
+                    <input class="input" id="newsEmail" name="email" type="text" inputmode="email" autocomplete="email" placeholder="you@example.com">
+                    <div class="field-error" role="alert"></div>
+                </div>
+                <button type="submit" class="btn btn-sm btn-block">Subscribe</button>
+                <div class="form-alert" role="status" style="margin:.6rem 0 0"></div>
+            </form>
+        </div>
+    </div>
+    <div class="container footer-bottom">
+        <span>© <span id="year">2026</span> KicksLab. Yersultan Sansyzbay · Almas Bekenov · Dinmukhamed Bolat</span>
+        <span>Final project — Web Development, SE-2506</span>
+    </div>
+</footer>
+<dialog class="cart" id="cartDialog" aria-labelledby="cartTitle">
+    <div class="cart-head"><h2 id="cartTitle" style="margin:0;font-size:1.3rem">Your cart</h2>
+        <button type="button" class="btn btn-outline btn-sm" id="cartClose">Close</button></div>
+    <ul class="cart-list" id="cartList"></ul>
+    <div class="cart-foot">
+        <div class="cart-total"><span>Total</span><span id="cartTotal">$0</span></div>
+        <button type="button" class="btn btn-block" id="checkoutBtn">Checkout</button>
+        <button type="button" class="btn btn-outline btn-block btn-sm" id="cartClear">Clear cart</button>
+    </div>
+</dialog>
+<script src="js/products.js"></script>
+<script src="js/script.js"></script>
 </body>
 </html>
